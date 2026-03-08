@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-spider-magenta: #d61c84;
+  --color-spider-dark: #120124;
+  --color-spider-purple: #4c005c;
+  --color-spider-blue: #5d69be;
+  --color-spider-silver: #d1cdc9;
+  --color-spider-black: #050505;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-spider-black text-spider-silver selection:bg-spider-magenta selection:text-white;
+    background-image: 
+      radial-gradient(circle at 50% 50%, rgba(76, 0, 92, 0.15) 0%, transparent 80%),
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-sans font-black tracking-tighter uppercase;
+  }
+}
+
+.glitch-text {
+  position: relative;
+  text-shadow: 0.05em 0 0 rgba(255, 0, 80, 0.75),
+    -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
+    0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+  animation: glitch 500ms infinite;
+}
+
+@keyframes glitch {
+  0% {
+    text-shadow: 0.05em 0 0 rgba(255, 0, 80, 0.75),
+      -0.05em -0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  14% {
+    text-shadow: 0.05em 0 0 rgba(255, 0, 80, 0.75),
+      -0.05em -0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  15% {
+    text-shadow: -0.05em -0.025em 0 rgba(255, 0, 80, 0.75),
+      0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  49% {
+    text-shadow: -0.05em -0.025em 0 rgba(255, 0, 80, 0.75),
+      0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  50% {
+    text-shadow: 0.025em 0.05em 0 rgba(255, 0, 80, 0.75),
+      0.05em 0 0 rgba(0, 255, 0, 0.75),
+      0 -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  99% {
+    text-shadow: 0.025em 0.05em 0 rgba(255, 0, 80, 0.75),
+      0.05em 0 0 rgba(0, 255, 0, 0.75),
+      0 -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  100% {
+    text-shadow: -0.025em 0 0 rgba(255, 0, 80, 0.75),
+      -0.025em -0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.025em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+}
+
+.circuit-mask {
+  mask-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10h20v20h10v-20h20v40h-10v10h20v20h-40v-10h-10v10h-10v-70z' fill='none' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
+  mask-size: 50px 50px;
+}
+
+.schematic-grid {
+  background-image: 
+    linear-gradient(rgba(214, 28, 132, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214, 28, 132, 0.1) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+}
+
+.grain-overlay {
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.04;
+  filter: contrast(150%) brightness(100%);
+}
+
+.contact-node {
+  @apply bg-spider-black/80 p-8 flex justify-between items-center no-underline text-inherit transition-all duration-500 relative overflow-hidden border-b border-spider-purple/10;
+}
+
+.contact-node:hover {
+  @apply bg-spider-magenta/5 pl-10;
+}
+
+.contact-node::after {
+  content: '';
+  @apply absolute left-0 top-0 h-full w-1 bg-spider-magenta scale-y-0 transition-transform duration-300;
+}
+
+.contact-node:hover::after {
+  @apply scale-y-100;
+}
