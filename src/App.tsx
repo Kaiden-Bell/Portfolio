@@ -546,7 +546,7 @@ export default function App() {
                   </h2>
                   
                   <p className="text-lg text-spider-silver/60 max-w-md mb-12 leading-relaxed">
-                    Available for specialized hardware architectural consulting, FPGA design, and high-speed PCB optimization. Current latency: &lt;12ms.
+                    Focused on embedded systems, hardware architecture, and low-level software. Building reliable systems where firmware meets silicon. Current latency: &lt;12ms.
                   </p>
 
                   <div className="grid grid-cols-2 gap-8 pt-8 border-t border-spider-purple/20">
