@@ -231,6 +231,7 @@ const CursorGlow = () => {
 
 export default function App() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [expandedSkillCard, setExpandedSkillCard] = useState<number | null>(null);
 
   return (
     <div className="min-h-screen selection:bg-spider-magenta selection:text-white">
@@ -378,14 +379,17 @@ export default function App() {
                       tech: ["Linux", "Docker", "AWS EC2", "Git/GitHub"],
                       logos: ["Linux", "Docker", "AWS"]
                     }
-                  ].map((cat, i) => (
-                    <motion.div 
-                      key={i}
-                      initial="rest"
-                      animate="rest"
-                      whileHover="hover"
-                      className="bg-spider-black border border-spider-purple/10 relative overflow-hidden group cursor-pointer"
-                    >
+                  ].map((cat, i) => {
+                    const isExpanded = expandedSkillCard === i;
+                    return (
+                      <motion.div 
+                        key={i}
+                        initial="rest"
+                        animate={isExpanded ? "hover" : "rest"}
+                        whileHover="hover"
+                        onClick={() => setExpandedSkillCard(prev => (prev === i ? null : i))}
+                        className="bg-spider-black border border-spider-purple/10 relative overflow-hidden group cursor-pointer"
+                      >
                       <div className="p-8 h-full flex flex-col">
                         <div className="flex justify-between items-start mb-8">
                           <div className="p-3 bg-spider-purple/10 rounded-lg">
@@ -423,14 +427,15 @@ export default function App() {
                         </motion.div>
                         
                         <div className="mt-auto pt-6 flex items-center gap-2 text-[10px] font-mono text-spider-blue tracking-widest uppercase opacity-40 group-hover:opacity-100 transition-opacity">
-                          <span>Hover to expand</span>
+                          <span>{isExpanded ? "Tap to collapse" : "Hover/tap to expand"}</span>
                         </div>
                       </div>
                       
                       {/* Decorative corner */}
                       <div className="absolute top-0 right-0 w-8 h-8 bg-spider-magenta/10 clip-path-polygon-[100%_0,100%_100%,0_0] opacity-0 group-hover:opacity-100 transition-opacity" />
                     </motion.div>
-                  ))}
+                  );
+                  })}
                 </div>
               </div>
             </section>
