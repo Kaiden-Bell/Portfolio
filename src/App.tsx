@@ -24,6 +24,7 @@ import {
   Gamepad2
 } from 'lucide-react';
 import ProjectCardstack from './ProjectCardstack';
+import AboutParallax from './AboutParallax';
 
 // --- Types ---
 interface Project {
@@ -306,49 +307,7 @@ export default function App() {
             </section>
 
             {/* About Section */}
-            <section id="about" className="py-24 px-6 max-w-7xl mx-auto scroll-mt-24">
-              <div className="grid md:grid-cols-2 gap-16 items-center">
-                <div className="relative">
-                  <div className="aspect-square bg-spider-dark border-2 border-spider-purple/20 p-4 relative group">
-                    <div className="absolute inset-0 bg-spider-magenta/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <img 
-                      src="https://cdn.5280.com/2018/05/Reno_FTG_Jay-Bouchard.jpg" 
-                      alt="Kaiden Bell" 
-                      className="w-full h-full object-cover grayscale contrast-125 brightness-75 group-hover:grayscale-0 transition-all duration-700"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute -bottom-4 -right-4 w-32 h-32 border-r-4 border-b-4 border-spider-magenta -z-10" />
-                  </div>
-                </div>
-                <div>
-                  <SectionHeading title="The Transition" subtitle="Professional Profile" />
-                  <div className="space-y-6 text-spider-silver/80 leading-relaxed">
-                    <p>
-                      I started with a strong software foundation, but my curiosity led me deeper into the machine. 
-                      I've spent the last few years descending the stack—from high-level applications to 
-                      <span className="text-white"> low-level systems programming</span> and finally into the 
-                      physical realm of <span className="text-white">hardware design</span>.
-                    </p>
-                    <p>
-                      My software background gives me a unique edge in hardware engineering. I don't just design 
-                      circuits; I design systems that are optimized for the code that will run on them. 
-                      Whether it's <span className="text-spider-magenta">ARMv7 emulation</span> or real-time 
-                      embedded control, I build with the full stack in mind.
-                    </p>
-                    <div className="grid grid-cols-2 gap-4 pt-4">
-                      <div className="bg-spider-dark/50 p-4 border border-spider-purple/10">
-                        <span className="font-mono text-xs text-spider-blue block mb-1">LOCATION</span>
-                        <span className="font-bold text-white">Sparks, Nevada</span>
-                      </div>
-                      <div className="bg-spider-dark/50 p-4 border border-spider-purple/10">
-                        <span className="font-mono text-xs text-spider-blue block mb-1">EDUCATION</span>
-                        <span className="font-bold text-white">BS CS & Engineering</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <AboutParallax />
 
             {/* Skills Section */}
             <section id="skills" className="py-24 px-6 bg-spider-dark/30 scroll-mt-24">
