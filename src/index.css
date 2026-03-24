@@ -113,3 +113,218 @@
 .contact-node:hover::after {
   @apply scale-y-100;
 }
+
+/* Cardstack Styles */
+:root {
+  --color-metal-light: #2a2a2a;
+  --color-metal-edge: #404040;
+  --color-surface: #0f0f0f;
+  --card-w: 420px;
+  --card-h: 580px;
+  --gap: 40px;
+}
+
+.tectonic-container {
+  width: 100%;
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.section-header {
+  padding-left: 10%;
+  margin-bottom: 60px;
+  border-left: 2px solid var(--color-spider-magenta);
+}
+
+.section-header h2 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-spider-magenta);
+  font-family: var(--font-mono);
+  margin-bottom: 10px;
+}
+
+.section-header p {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+/* Marquee Logic */
+.marquee {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  user-select: none;
+  cursor: grab;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 15%,
+    black 85%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 15%,
+    black 85%,
+    transparent
+  );
+}
+
+.marquee:active {
+  cursor: grabbing;
+}
+
+.marquee::-webkit-scrollbar {
+  display: none;
+}
+
+.marquee-track {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--gap);
+  padding: 20px 0;
+}
+
+/* The Monolith Card */
+.monolith {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  background: var(--color-surface);
+  border: 1px solid var(--color-metal-light);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* Machined aesthetic: Bevels and grooves */
+.monolith::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-metal-edge), transparent);
+}
+
+.monolith::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; height: 4px;
+  background: var(--color-spider-magenta);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.monolith:hover {
+  border-color: var(--color-metal-edge);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+
+.monolith:hover::after {
+  transform: scaleX(1);
+}
+
+/* Card Content */
+.id-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-spider-silver);
+  opacity: 0.6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.id-tag span {
+  color: var(--color-spider-magenta);
+  opacity: 1;
+}
+
+.monolith-title {
+  margin-top: 20px;
+}
+
+.monolith-title h3 {
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.monolith-title p {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-spider-silver);
+  opacity: 0.7;
+  max-width: 80%;
+  line-height: 1.4;
+}
+
+.visual-core {
+  flex-grow: 1;
+  margin: 40px 0;
+  background: radial-gradient(circle at center, #1a1a1a 0%, transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Machined Wireframe Shape */
+.machined-shape {
+  width: 120px;
+  height: 120px;
+  border: 1px solid var(--color-metal-edge);
+  position: relative;
+  transform: rotate(45deg);
+  transition: transform 0.8s ease;
+}
+
+.monolith:hover .machined-shape {
+  transform: rotate(225deg);
+  border-color: var(--color-spider-magenta);
+}
+
+.machined-shape::after {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border: 1px solid var(--color-metal-light);
+}
+
+.specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  border-top: 1px solid var(--color-metal-light);
+  padding-top: 30px;
+}
+
+.spec-item label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  color: var(--color-spider-silver);
+  opacity: 0.5;
+  margin-bottom: 4px;
+}
+
+.spec-item .value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-spider-silver);
+  font-weight: 700;
+}

@@ -23,6 +23,7 @@ import {
   ShieldCheck,
   Gamepad2
 } from 'lucide-react';
+import ProjectCardstack from './ProjectCardstack';
 
 // --- Types ---
 interface Project {
@@ -441,63 +442,7 @@ export default function App() {
             </section>
 
             {/* Projects Section */}
-            <section id="projects" className="py-24 px-6 max-w-7xl mx-auto scroll-mt-24">
-              <SectionHeading title="Hardware Lab" subtitle="Engineering Projects" />
-              <div className="grid md:grid-cols-2 gap-8">
-                {PROJECTS.map((project, i) => (
-                  <motion.div 
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="bg-spider-dark/40 border border-spider-purple/10 p-8 hover:border-spider-magenta/40 transition-all group"
-                  >
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="p-3 bg-spider-purple/20 text-spider-magenta">
-                        {project.icon}
-                      </div>
-                      <span className="font-mono text-[10px] text-spider-blue uppercase tracking-widest">
-                        {project.tech}
-                      </span>
-                    </div>
-                    <h3 className="text-2xl mb-4 text-white group-hover:text-spider-magenta transition-colors">
-                      {project.title}
-                    </h3>
-                    <ul className="space-y-3 text-sm text-spider-silver/70 mb-8">
-                      {project.description.map((point, j) => (
-                        <li key={j} className="flex gap-2">
-                          <ChevronRight className="w-4 h-4 text-spider-magenta shrink-0" />
-                          {point}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="flex gap-4">
-                      {project.source && (
-                        <a
-                          href={project.source}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-xs font-mono text-spider-blue hover:text-white flex items-center gap-1 uppercase"
-                        >
-                          <Github className="w-3 h-3" /> Source
-                        </a>
-                      )}
-
-                      {project.demo && (
-                        <a
-                          href={project.demo}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-xs font-mono text-spider-blue hover:text-white flex items-center gap-1 uppercase"
-                        >
-                          <ExternalLink className="w-3 h-3" /> Demo
-                        </a>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </section>
+            <ProjectCardstack projects={PROJECTS} />
 
             {/* Experience Section */}
             <section className="py-24 px-6 bg-spider-dark/30">
