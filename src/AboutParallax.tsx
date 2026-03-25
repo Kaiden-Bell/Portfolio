@@ -17,12 +17,9 @@ export default function AboutParallax() {
   const scale8 = useTransform(scrollYProgress, [0, 1], [1, 8]);
   const scale9 = useTransform(scrollYProgress, [0, 1], [1, 9]);
 
-  // Main background filter dimming as text reveals
-  const filterMain = useTransform(scrollYProgress, [0.55, 0.8], ["brightness(1)", "brightness(0.2)"]);
-  
-  // Text fade-in properties
-  const opacityText = useTransform(scrollYProgress, [0.65, 0.85], [0, 1]);
-  const yText = useTransform(scrollYProgress, [0.65, 0.85], [50, 0]);
+  // Main background filter dimming
+  const filterMain = useTransform(scrollYProgress, [0.55, 0.8], ["brightness(1)", "brightness(0.3)"]);
+
 
   const scales = [scale4, scale5, scale6, scale5, scale6, scale8, scale9];
 
@@ -37,8 +34,10 @@ export default function AboutParallax() {
   ];
 
   return (
-    <section id="about" ref={container} className="relative h-[300vh] bg-spider-black">
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <section id="about" className="relative z-10">
+      {/* 300vh scroll area for parallax zoom */}
+      <div ref={container} className="relative h-[300vh] mb-24">
+        <div className="sticky top-0 h-screen overflow-hidden bg-spider-black/50 backdrop-blur-sm">
         {images.map(({ src }, index) => {
           const scale = scales[index % scales.length];
           return (
@@ -67,52 +66,50 @@ export default function AboutParallax() {
             </motion.div>
           );
         })}
-        
-        {/* Post Zoom Content Overlay */}
-        <motion.div 
-          style={{ opacity: opacityText, y: yText }}
-          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-50 text-center px-6"
-        >
-          <div className="max-w-3xl pointer-events-auto bg-spider-black/80 p-8 sm:p-12 border-t-2 border-spider-magenta backdrop-blur-md relative overflow-hidden">
-            {/* Background schematic accent */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-spider-magenta/10 clip-path-polygon-[100%_0,100%_100%,0_0] opacity-50 pointer-events-none" />
+        </div>
+      </div>
+      
+      {/* Static text content displayed under the parallax section */}
+      <div className="max-w-4xl mx-auto px-6 pb-32">
+        <div className="bg-spider-black/80 p-8 sm:p-12 border-t-2 border-spider-magenta relative overflow-hidden">
+          {/* Background schematic accent */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-spider-magenta/10 clip-path-polygon-[100%_0,100%_100%,0_0] opacity-50 pointer-events-none" />
 
-            <div className="mb-10 text-left">
-              <span className="font-mono text-spider-magenta text-xs tracking-[0.3em] uppercase block mb-2">
-                Professional Profile
-              </span>
-              <h2 className="text-4xl sm:text-6xl font-black text-white uppercase tracking-tighter">
-                The Transition<span className="text-spider-magenta">.</span>
-              </h2>
-            </div>
+          <div className="mb-10 text-left">
+            <span className="font-mono text-spider-magenta text-xs tracking-[0.3em] uppercase block mb-2">
+              Professional Profile
+            </span>
+            <h2 className="text-4xl sm:text-6xl font-black text-white uppercase tracking-tighter">
+              The Transition<span className="text-spider-magenta">.</span>
+            </h2>
+          </div>
 
-            <div className="space-y-6 text-spider-silver/80 leading-relaxed text-left text-lg">
-              <p>
-                I started with a strong software foundation, but my curiosity led me deeper into the machine. 
-                I've spent the last few years descending the stack—from high-level applications to 
-                <span className="text-white font-bold"> low-level systems programming</span> and finally into the 
-                physical realm of <span className="text-white font-bold">hardware design</span>.
-              </p>
-              <p>
-                My software background gives me a unique edge in hardware engineering. I don't just design 
-                circuits; I design systems that are optimized for the code that will run on them. 
-                Whether it's <span className="text-spider-magenta font-mono uppercase text-sm">ARMv7 emulation</span> or real-time 
-                embedded control, I build with the full stack in mind.
-              </p>
-              
-              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-spider-purple/20 mt-6">
-                <div className="p-4 bg-spider-dark/50 border border-spider-purple/10 border-l-2 border-l-spider-blue">
-                  <span className="font-mono text-[10px] text-spider-blue block mb-1 tracking-widest uppercase">Location</span>
-                  <span className="font-bold text-white uppercase text-sm">Sparks, Nevada</span>
-                </div>
-                <div className="p-4 bg-spider-dark/50 border border-spider-purple/10 border-l-2 border-l-spider-magenta">
-                  <span className="font-mono text-[10px] text-spider-magenta block mb-1 tracking-widest uppercase">Education</span>
-                  <span className="font-bold text-white uppercase text-sm">BS CS & Eng</span>
-                </div>
+          <div className="space-y-6 text-spider-silver/80 leading-relaxed text-left text-lg">
+            <p>
+              I started with a strong software foundation, but my curiosity led me deeper into the machine. 
+              I've spent the last few years descending the stack—from high-level applications to 
+              <span className="text-white font-bold"> low-level systems programming</span> and finally into the 
+              physical realm of <span className="text-white font-bold">hardware design</span>.
+            </p>
+            <p>
+              My software background gives me a unique edge in hardware engineering. I don't just design 
+              circuits; I design systems that are optimized for the code that will run on them. 
+              Whether it's <span className="text-spider-magenta font-mono uppercase text-sm">ARMv7 emulation</span> or real-time 
+              embedded control, I build with the full stack in mind.
+            </p>
+            
+            <div className="grid grid-cols-2 gap-4 pt-6 border-t border-spider-purple/20 mt-6">
+              <div className="p-4 bg-spider-dark/50 border border-spider-purple/10 border-l-2 border-l-spider-blue">
+                <span className="font-mono text-[10px] text-spider-blue block mb-1 tracking-widest uppercase">Location</span>
+                <span className="font-bold text-white uppercase text-sm">Sparks, Nevada</span>
+              </div>
+              <div className="p-4 bg-spider-dark/50 border border-spider-purple/10 border-l-2 border-l-spider-magenta">
+                <span className="font-mono text-[10px] text-spider-magenta block mb-1 tracking-widest uppercase">Education</span>
+                <span className="font-bold text-white uppercase text-sm">BS CS & Eng</span>
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

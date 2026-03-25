@@ -5,26 +5,30 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Cpu, 
-  Code2, 
-  Terminal, 
-  CircuitBoard, 
-  Layers, 
-  Zap, 
-  Github, 
-  Mail, 
-  Phone, 
-  MapPin, 
+import {
+  Cpu,
+  Code2,
+  Terminal,
+  CircuitBoard,
+  Layers,
+  Zap,
+  Github,
+  Mail,
+  Phone,
+  MapPin,
   ExternalLink,
   ChevronRight,
   Monitor,
   Database,
+  Menu,
+  X,
   ShieldCheck,
   Gamepad2
 } from 'lucide-react';
 import ProjectCardstack from './ProjectCardstack';
 import AboutParallax from './AboutParallax';
+import TechStackOrbit from './TechStackOrbit';
+import ExperienceTrack from './ExperienceTrack';
 
 // --- Types ---
 interface Project {
@@ -95,28 +99,7 @@ const PROJECTS: Project[] = [
   }
 ];
 
-const EXPERIENCES: Experience[] = [
-  {
-    role: "Independent IT & Systems Technician",
-    company: "Self-Employed",
-    period: "2025 ~ Present",
-    points: [
-      "Diagnosed and resolved hardware, firmware, and OS-level issues across diverse client systems.",
-      "Performed component-level troubleshooting and system configuration.",
-      "Conducted secure system hardening and reliability optimization."
-    ]
-  },
-  {
-    role: "Freelance Web & Systems Developer",
-    company: "Self-Employed",
-    period: "2024 ~ Present",
-    points: [
-      "Designed and deployed full-stack production websites including backend APIs and database integration.",
-      "Managed hosting environments and domain configuration.",
-      "Implemented responsive design and optimized performance for diverse client needs."
-    ]
-  },
-];
+
 
 // --- Components ---
 
@@ -147,7 +130,7 @@ const Intro = ({ onComplete }: { onComplete: () => void }) => {
   }, []);
 
   return (
-    <motion.div 
+    <motion.div
       exit={{ opacity: 0, scale: 1.1 }}
       className="fixed inset-0 z-100 bg-spider-black flex items-center justify-center p-6 font-mono"
     >
@@ -157,7 +140,7 @@ const Intro = ({ onComplete }: { onComplete: () => void }) => {
             <Cpu className="text-spider-magenta" />
           </div>
           <div className="h-1 grow bg-spider-purple/30 overflow-hidden">
-            <motion.div 
+            <motion.div
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
               transition={{ duration: 3, ease: "linear" }}
@@ -166,7 +149,7 @@ const Intro = ({ onComplete }: { onComplete: () => void }) => {
           </div>
         </div>
         {logs.map((log, i) => (
-          <motion.p 
+          <motion.p
             key={i}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
@@ -180,26 +163,102 @@ const Intro = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
-const Navbar = () => (
-  <nav className="fixed top-0 left-0 right-0 z-50 border-b border-spider-purple/20 bg-spider-black/80 backdrop-blur-md px-6 py-4">
-    <div className="max-w-7xl mx-auto flex justify-between items-center">
-      <a href="#" className="flex items-center gap-2 group">
-        <div className="w-8 h-8 bg-spider-magenta flex items-center justify-center rotate-45 group-hover:scale-110 transition-transform">
-          <span className="text-white font-black -rotate-45">KB</span>
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <nav className="absolute top-0 left-0 right-0 z-50 border-b border-spider-purple/20 bg-spider-black/90 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
+      <div className="px-4 sm:px-6 py-4 max-w-7xl mx-auto flex justify-between items-center">
+        {/* Brand ID Element */}
+        <a href="#" className="flex items-center gap-4 group cursor-pointer w-auto justify-start">
+          <div className="relative flex items-center justify-center w-10 h-10 border border-spider-purple/40 bg-spider-dark/80 group-hover:bg-spider-magenta/10 group-hover:border-spider-magenta transition-all duration-300">
+            <div className="absolute inset-[3px] border border-spider-magenta/20 group-hover:border-spider-magenta/80 transition-colors" />
+            <span className="text-white font-black tracking-tighter text-sm z-10 group-hover:text-spider-magenta transition-colors relative">
+              KB
+            </span>
+            {/* Cyber accents */}
+            <div className="absolute -top-px -left-px w-2 h-2 border-t-2 border-l-2 border-spider-magenta opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute -bottom-px -right-px w-2 h-2 border-b-2 border-r-2 border-spider-magenta opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+
+          <div className="flex flex-col text-left">
+            <span className="font-mono text-[9px] tracking-[0.2em] text-spider-magenta uppercase leading-none mb-1.5 opacity-80">
+              System_Arch // v2.0
+            </span>
+            <span className="font-sans text-xs font-black text-spider-silver uppercase tracking-widest leading-none group-hover:text-white transition-colors">
+              Hardware Engineering
+            </span>
+          </div>
+        </a>
+
+        {/* Desktop Navigation Links */}
+        <div className="hidden sm:flex gap-6 sm:gap-8 items-center bg-spider-dark/40 px-6 py-2.5 border border-spider-purple/10">
+          {[
+            { name: "About", href: "#about", id: "01" },
+            { name: "Tech", href: "#skills", id: "02" },
+            { name: "Projects", href: "#projects", id: "03" },
+            { name: "Contact", href: "#contact", id: "04" },
+          ].map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              className="group relative flex items-center gap-1.5 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-spider-silver/60 hover:text-white transition-colors"
+            >
+              <span className="text-[9px] text-spider-magenta opacity-50 group-hover:opacity-100 transition-opacity">
+                {link.id}.
+              </span>
+              <span className="relative overflow-hidden pb-1">
+                {link.name}
+                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-spider-magenta -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
+              </span>
+            </a>
+          ))}
         </div>
-        <span className="font-mono text-xs tracking-widest text-spider-blue hidden sm:block uppercase">
-          Hardware // Embedded
-        </span>
-      </a>
-      <div className="flex gap-6 text-xs font-mono uppercase tracking-tighter">
-        <a href="#about" className="hover:text-spider-magenta transition-colors">About</a>
-        <a href="#skills" className="hover:text-spider-magenta transition-colors">Tech</a>
-        <a href="#projects" className="hover:text-spider-magenta transition-colors">Projects</a>
-        <a href="#contact" className="hover:text-spider-magenta transition-colors">Contact</a>
+
+        {/* Mobile Hamburger Toggle */}
+        <button 
+          className="sm:hidden text-spider-magenta p-2"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
-    </div>
-  </nav>
-);
+
+      {/* Mobile Dropdown */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="sm:hidden overflow-hidden bg-spider-dark/95 backdrop-blur-md border-t border-spider-purple/20"
+          >
+            <div className="flex flex-col p-4 gap-2">
+              {[
+                { name: "About", href: "#about", id: "01" },
+                { name: "Tech", href: "#skills", id: "02" },
+                { name: "Projects", href: "#projects", id: "03" },
+                { name: "Contact", href: "#contact", id: "04" },
+              ].map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 p-3 font-mono text-xs uppercase tracking-widest text-spider-silver hover:bg-spider-magenta/10 hover:text-white transition-colors border border-spider-magenta/10"
+                >
+                  <span className="text-[10px] text-spider-magenta opacity-70">
+                    {link.id}.
+                  </span>
+                  {link.name}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+  );
+};
 
 const SectionHeading = ({ title, subtitle }: { title: string, subtitle: string }) => (
   <div className="mb-12">
@@ -224,10 +283,54 @@ const CursorGlow = () => {
   }, []);
 
   return (
-    <div 
+    <div
       className="fixed pointer-events-none z-0 w-150 h-150 bg-spider-magenta/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 ease-out"
       style={{ left: mousePos.x, top: mousePos.y }}
     />
+  );
+};
+
+const FloatingNav = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-4">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.8 }}
+            className="flex flex-col gap-3 mb-2"
+          >
+            {[
+              { name: "About", href: "#about", icon: <Layers className="w-5 h-5" /> },
+              { name: "Tech", href: "#skills", icon: <Cpu className="w-5 h-5" /> },
+              { name: "Projects", href: "#projects", icon: <Code2 className="w-5 h-5" /> },
+              { name: "Contact", href: "#contact", icon: <Mail className="w-5 h-5" /> },
+            ].map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className="w-12 h-12 rounded-full bg-spider-dark/95 border border-spider-magenta/40 text-spider-magenta flex items-center justify-center hover:bg-spider-magenta hover:text-white transition-all shadow-lg shadow-spider-magenta/20 group relative"
+              >
+                {link.icon}
+                <span className="absolute right-full mr-4 bg-spider-black/90 text-white text-xs font-mono px-3 py-1.5 border border-spider-purple/30 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  {link.name}
+                </span>
+              </a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-[0_0_20px_rgba(214,28,132,0.4)] ${isOpen ? 'bg-spider-magenta text-white rotate-45' : 'bg-spider-black/90 backdrop-blur-md border border-spider-magenta text-spider-magenta hover:bg-spider-magenta/20 hover:scale-110'}`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
+    </div>
   );
 };
 
@@ -242,18 +345,20 @@ export default function App() {
       </AnimatePresence>
 
       {isLoaded && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
+          className="relative"
         >
           <Navbar />
+          <FloatingNav />
 
           <main className="pt-24">
             {/* Hero Section */}
-            <section className="min-h-[80vh] flex items-center px-6 max-w-7xl mx-auto relative overflow-hidden">
+            <section className="min-h-[100vh] mb-32 flex items-center px-6 max-w-7xl mx-auto relative overflow-hidden">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-spider-purple/10 rounded-full blur-[120px] -z-10" />
-              
+
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -268,19 +373,19 @@ export default function App() {
                   <span className="text-spider-magenta italic glitch-text">ENGINEER</span>
                 </h1>
                 <p className="max-w-xl text-lg text-spider-silver/80 font-medium leading-relaxed mb-10">
-                  Computer Science and Engineering student specializing in <span className="text-white">embedded systems</span>, 
+                  Computer Science and Engineering student specializing in <span className="text-white">embedded systems</span>,
                   computer architecture, and digital logic. Bridging the gap between software intent and physical reality.
                 </p>
                 <div className="flex gap-4">
-                  <a 
-                    href="#projects" 
+                  <a
+                    href="#projects"
                     className="bg-spider-magenta text-white px-8 py-4 font-black uppercase tracking-tighter hover:bg-white hover:text-spider-magenta transition-all flex items-center gap-2 group"
                   >
                     View Schematics
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </a>
-                  <a 
-                    href="#contact" 
+                  <a
+                    href="#contact"
                     className="border border-spider-purple/40 px-8 py-4 font-black uppercase tracking-tighter hover:bg-spider-purple/10 transition-all"
                   >
                     Connect
@@ -288,153 +393,34 @@ export default function App() {
                 </div>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 1 }}
                 className="absolute right-0 top-0 bottom-0 w-full lg:w-2/3 -z-10 lg:z-10 pointer-events-none"
               >
-                <div className="absolute inset-0 bg-linear-to-r from-spider-black via-transparent to-transparent z-20 circuit-mask"/>
+                <div className="absolute inset-0 bg-linear-to-r from-spider-black via-transparent to-transparent z-20 circuit-mask" />
                 <div className="absolute inset-0 bg-spider-magenta/10 mix-blend-overlay z-10 circuit-mask" />
-                <img 
-                  src="src/assets/bell_graduation-40-removebg-preview.png" 
-                  alt="Hardware Architecture" 
-                  className="w-full h-full object-contain contrast-100 mix-blend-lighten"
-                  referrerPolicy="no-referrer"
-                  loading="lazy"
-                />
               </motion.div>
             </section>
 
             {/* About Section */}
             <AboutParallax />
 
-            {/* Skills Section */}
-            <section id="skills" className="py-24 px-6 bg-spider-dark/30 scroll-mt-24">
-              <div className="max-w-7xl mx-auto">
-                <SectionHeading title="Core Matrix" subtitle="Technical Competencies" />
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {[
-                    {
-                      title: "Hardware",
-                      icon: <CircuitBoard className="text-spider-magenta" />,
-                      tech: ["Embedded C", "ADC/UART", "ARMv7", "PCB Design"],
-                      logos: ["C", "Altium", "Verilog"]
-                    },
-                    {
-                      title: "Low-Level",
-                      icon: <Terminal className="text-spider-blue" />,
-                      tech: ["C++", "Assembly", "Memory Modeling", "Bitwise Ops"],
-                      logos: ["C++", "ASM", "GDB"]
-                    },
-                    {
-                      title: "Software",
-                      icon: <Code2 className="text-spider-magenta" />,
-                      tech: ["Python", "Java", "SQL Modeling", "REST APIs"],
-                      logos: ["Python", "Java", "SQL"]
-                    },
-                    {
-                      title: "Infrastructure",
-                      icon: <Layers className="text-spider-blue" />,
-                      tech: ["Linux", "Docker", "AWS EC2", "Git/GitHub"],
-                      logos: ["Linux", "Docker", "AWS"]
-                    }
-                  ].map((cat, i) => {
-                    const isExpanded = expandedSkillCard === i;
-                    return (
-                      <motion.div 
-                        key={i}
-                        initial="rest"
-                        animate={isExpanded ? "hover" : "rest"}
-                        whileHover="hover"
-                        onClick={() => setExpandedSkillCard(prev => (prev === i ? null : i))}
-                        className="bg-spider-black border border-spider-purple/10 relative overflow-hidden group cursor-pointer"
-                      >
-                      <div className="p-8 h-full flex flex-col">
-                        <div className="flex justify-between items-start mb-8">
-                          <div className="p-3 bg-spider-purple/10 rounded-lg">
-                            {cat.icon}
-                          </div>
-                          <div className="flex gap-2">
-                            {cat.logos.map((logo, idx) => (
-                              <span key={idx} className="text-[10px] font-mono text-spider-blue/40 border border-spider-blue/20 px-1.5 py-0.5 rounded">
-                                {logo}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <h3 className="text-2xl font-black text-white mb-4 group-hover:text-spider-magenta transition-colors">
-                          {cat.title}
-                        </h3>
-
-                        <motion.div 
-                          variants={{
-                            rest: { height: 0, opacity: 0 },
-                            hover: { height: "auto", opacity: 1 }
-                          }}
-                          transition={{ duration: 0.3, ease: "easeOut" }}
-                          className="overflow-hidden"
-                        >
-                          <ul className="space-y-3 font-mono text-xs text-spider-silver/60 pt-4 border-t border-spider-purple/10">
-                            {cat.tech.map((skill, j) => (
-                              <li key={j} className="flex items-center gap-2">
-                                <Zap className="w-3 h-3 text-spider-magenta" />
-                                {skill}
-                              </li>
-                            ))}
-                          </ul>
-                        </motion.div>
-                        
-                        <div className="mt-auto pt-6 flex items-center gap-2 text-[10px] font-mono text-spider-blue tracking-widest uppercase opacity-40 group-hover:opacity-100 transition-opacity">
-                          <span>{isExpanded ? "Tap to collapse" : "Hover/tap to expand"}</span>
-                        </div>
-                      </div>
-                      
-                      {/* Decorative corner */}
-                      <div className="absolute top-0 right-0 w-8 h-8 bg-spider-magenta/10 clip-path-polygon-[100%_0,100%_100%,0_0] opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </motion.div>
-                  );
-                  })}
-                </div>
-              </div>
-            </section>
+            {/* Orbiting Tech Stack Section */}
+            <TechStackOrbit />
 
             {/* Projects Section */}
-            <ProjectCardstack projects={PROJECTS} />
+            <div className="mb-32">
+              <ProjectCardstack projects={PROJECTS} />
+            </div>
 
             {/* Experience Section */}
-            <section className="py-24 px-6 bg-spider-dark/30">
-              <div className="max-w-7xl mx-auto">
-                <SectionHeading title="Service History" subtitle="Professional Experience" />
-                <div className="space-y-12">
-                  {EXPERIENCES.map((exp, i) => (
-                    <div key={i} className="grid md:grid-cols-[200px_1fr] gap-8">
-                      <div className="font-mono text-spider-blue text-sm">
-                        {exp.period}
-                      </div>
-                      <div className="border-l-2 border-spider-purple/20 pl-8 pb-8">
-                        <h3 className="text-2xl text-white mb-1">{exp.role}</h3>
-                        <span className="text-spider-magenta font-bold block mb-4 italic">{exp.company}</span>
-                        <ul className="space-y-3 text-spider-silver/70">
-                          {exp.points.map((point, j) => (
-                            <li key={j} className="flex gap-2">
-                              <div className="w-1.5 h-1.5 bg-spider-blue mt-2 shrink-0" />
-                              {point}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
+            <ExperienceTrack />
 
             {/* Contact Section */}
-            <section id="contact" className="min-h-screen flex items-center justify-center py-24 px-6 relative overflow-hidden bg-spider-black scroll-mt-24">
-              <div className="schematic-grid absolute inset-0 z-0" />
-              
+            <section id="contact" className="min-h-screen py-32 flex items-center justify-center px-6 relative overflow-hidden bg-spider-dark/20 scroll-mt-24">
+
               {/* Cursor Glow Effect */}
               <CursorGlow />
 
@@ -444,11 +430,11 @@ export default function App() {
                     <div className="w-12 h-px bg-spider-magenta" />
                     <span className="font-mono text-xs uppercase tracking-[0.2em] text-spider-magenta">Signal Integrity</span>
                   </div>
-                  
+
                   <h2 className="text-6xl sm:text-8xl font-black text-white leading-[0.9] mb-8">
-                    CONNECT<br/>TO NODE<span className="text-spider-magenta">.</span>
+                    CONNECT<br />TO NODE<span className="text-spider-magenta">.</span>
                   </h2>
-                  
+
                   <p className="text-lg text-spider-silver/60 max-w-md mb-12 leading-relaxed">
                     Focused on embedded systems, hardware architecture, and low-level software. Building reliable systems where firmware meets silicon. Current latency: &lt;12ms.
                   </p>
