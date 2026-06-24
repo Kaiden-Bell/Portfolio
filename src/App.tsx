@@ -29,6 +29,7 @@ import ProjectCardstack from './ProjectCardstack';
 import AboutParallax from './AboutParallax';
 import TechStackOrbit from './TechStackOrbit';
 import ExperienceTrack from './ExperienceTrack';
+import Hero from './Hero';
 
 // --- Types ---
 interface Project {
@@ -74,24 +75,30 @@ const PROJECTS: Project[] = [
     demo: "https://www.youtube.com/watch?v=demo456"
   },
   {
-    title: "Secure Password Manager",
+    title: "Secure Password Manager v1.0",
     tech: "C++, Systems Security",
     description: [
-      "Developed a secure credential storage system emphasizing encryption and safe memory handling.",
-      "Applied system-level security design principles and defensive programming practices.",
-      "Focused on minimizing attack surface and improving secure memory management."
+      "A secure credential storage system emphasizing encryption and safe memory handling.",
     ],
     icon: <ShieldCheck className="w-6 h-6" />,
     source: "https://github.com/Kaiden-Bell/Password-Manager",
     demo: "https://www.youtube.com/watch?v=demo789"
   },
   {
-    title: "ML Match Outcome Predictor",
+    title: "The Vault: Secure Password Manager v2.0",
+    tech: "C++, Systems Security",
+    description: [
+      "A local encrypted password manager with optional Arduino keypad-based hardware gating.",
+    ],
+    icon: <ShieldCheck className="w-6 h-6" />,
+    source: "https://github.com/Kaiden-Bell/Password-Manager",
+    demo: "https://www.youtube.com/watch?v=demo789"
+  },
+  {
+    title: "RLPredictor: Competitive Match Outcome Predictor",
     tech: "Python, ML, Data Engineering",
     description: [
-      "Designed a predictive system integrating API data and historical statistics.",
-      "Applied supervised learning techniques and data preprocessing pipelines.",
-      "Modeled uncertainty in competitive systems using real-world match data."
+      "RLPredictor is an advanced Machine Learning prediction engine for Rocket League Esports."       
     ],
     icon: <Database className="w-6 h-6" />,
     source: "https://github.com/Kaiden-Bell/RLPredictor",
@@ -356,53 +363,7 @@ export default function App() {
 
           <main className="pt-24">
             {/* Hero Section */}
-            <section className="min-h-[100vh] mb-32 flex items-center px-6 max-w-7xl mx-auto relative overflow-hidden">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-spider-purple/10 rounded-full blur-[120px] -z-10" />
-
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="z-20 relative lg:max-w-4xl"
-              >
-                <span className="font-mono text-spider-blue mb-4 block tracking-widest">
-                  SYSTEM_ARCHITECT // KAIDEN_BELL
-                </span>
-                <h1 className="text-6xl sm:text-9xl font-black leading-[0.85] mb-8">
-                  HARDWARE<br />
-                  <span className="text-spider-magenta italic glitch-text">ENGINEER</span>
-                </h1>
-                <p className="max-w-xl text-lg text-spider-silver/80 font-medium leading-relaxed mb-10">
-                  Computer Science and Engineering student specializing in <span className="text-white">embedded systems</span>,
-                  computer architecture, and digital logic. Bridging the gap between software intent and physical reality.
-                </p>
-                <div className="flex gap-4">
-                  <a
-                    href="#projects"
-                    className="bg-spider-magenta text-white px-8 py-4 font-black uppercase tracking-tighter hover:bg-white hover:text-spider-magenta transition-all flex items-center gap-2 group"
-                  >
-                    View Schematics
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </a>
-                  <a
-                    href="#contact"
-                    className="border border-spider-purple/40 px-8 py-4 font-black uppercase tracking-tighter hover:bg-spider-purple/10 transition-all"
-                  >
-                    Connect
-                  </a>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4, duration: 1 }}
-                className="absolute right-0 top-0 bottom-0 w-full lg:w-2/3 -z-10 lg:z-10 pointer-events-none"
-              >
-                <div className="absolute inset-0 bg-linear-to-r from-spider-black via-transparent to-transparent z-20 circuit-mask" />
-                <div className="absolute inset-0 bg-spider-magenta/10 mix-blend-overlay z-10 circuit-mask" />
-              </motion.div>
-            </section>
+            <Hero />
 
             {/* About Section */}
             <AboutParallax />
