@@ -1,0 +1,33 @@
+---
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource-variable/martian-mono/wdth.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  theme?: 'dark' | 'light';
+}
+
+const {
+  title,
+  description = 'Kaiden Bell: full-stack and hardware systems engineer in Sparks, Nevada.',
+  theme = 'dark',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content={theme} />
+    <meta name="theme-color" content={theme === 'dark' ? '#1d1c1a' : '#f3eee3'} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,448 @@
+---
+import { Image } from 'astro:assets';
+import '@fontsource/dela-gothic-one/japanese-400.css';
+import Base from '../layouts/Base.astro';
+import Arrow from '../components/Arrow.astro';
+import Barcode from '../components/Barcode.astro';
+import Roundel from '../components/Roundel.astro';
+import portrait from '../assets/portraits/three-quarter.webp';
+import { profile, nav, projects, stack } from '../data/profile';
+import { work } from '../data/work';
+
+const byId = Object.fromEntries(projects.map((p) => [p.id, p]));
+const leftLines = ['vault', 'armv7', 'rlpredictor'].map((id) => byId[id]);
+const rightLines = ['homelab', 'autoapplier', 'waitlist'].map((id) => byId[id]);
+// Projects with a story on /work open there; the rest still go to GitHub.
+const onWork = new Set(work.map((p) => p.id));
+const hrefFor = (id: string) => (onWork.has(id) ? `/work#${id}` : profile.github);
+---
+
+<Base title="Kaiden Bell" theme="light">
+  <main class="cover">
+    <p class="spine" lang="ja" aria-hidden="true">カイデン・ベル</p>
+
+    <header class="bar">
+      <nav aria-label="Primary">
+        <ul>
+          {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        </ul>
+      </nav>
+      <p class="dateline">Autumn 2026 <span aria-hidden="true">/</span> {profile.place}</p>
+    </header>
+
+    <h1 class="masthead">Kaiden Bell</h1>
+
+    <Image
+      class="figure"
+      src={portrait}
+      alt="Kaiden Bell, backlit in a cap and glasses, looking up and to the left"
+      widths={[540, 800, 1067]}
+      sizes="(max-width: 860px) 90vw, 55vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+
+    <section class="lines lines-left" aria-label="Featured projects">
+      <p class="lead">From the register to the <em>REST API.</em></p>
+      <p class="deck">{profile.role}, studying Computer Science &amp; Engineering at the University of Nevada, Reno.</p>
+      <ul>
+        {leftLines.map((p) => (
+          <li><a href={hrefFor(p.id)}><strong>{p.name}</strong> {p.line}</a></li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="lines lines-right" aria-label="Also in this issue">
+      <ul>
+        {rightLines.map((p) => (
+          <li><a href={hrefFor(p.id)}><strong>{p.name}</strong> {p.line}</a></li>
+        ))}
+      </ul>
+    </section>
+
+    <div class="seal"><Roundel /></div>
+
+    <footer class="foot">
+      <a class="cta" href="/work">
+        See the work
+        <span class="cta-arrow"><Arrow size={16} /></span>
+      </a>
+      <p class="index"><span class="sr-only">Stack: </span>{stack.slice(0, 8).map((s) => <span>{s}</span>)}</p>
+      <div class="code"><Barcode /></div>
+    </footer>
+  </main>
+</Base>
+
+<style>
+  .cover {
+    --ink: var(--charcoal);
+    --paper: var(--bone);
+    position: relative;
+    min-height: 100svh;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      radial-gradient(80% 70% at 55% 55%, oklch(0.97 0.01 85), transparent 75%),
+      var(--paper);
+    color: var(--ink);
+    display: grid;
+    grid-template-columns: clamp(2.5rem, 5vw, 4.5rem) repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto auto 1fr auto;
+    column-gap: clamp(0.75rem, 1.6vw, 1.75rem);
+    padding: 0 var(--gutter) clamp(0.9rem, 2.4svh, 1.6rem) 0;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    opacity: 0.3;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .18 0 0 0 0 .15 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Spine: the one big gold gesture on the page */
+  .spine {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: clamp(2.5rem, 5vw, 4.5rem);
+    z-index: 3;
+    margin: 0;
+    padding-block: clamp(1rem, 3svh, 2rem);
+    display: flex;
+    justify-content: center;
+    background: var(--charcoal);
+    color: var(--gold);
+    writing-mode: vertical-rl;
+    font-family: var(--font-jp);
+    font-size: clamp(1.6rem, 3.2vw, 2.9rem);
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  .bar {
+    grid-column: 2 / -1;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: clamp(0.9rem, 2.4svh, 1.6rem);
+    padding-bottom: 0.45rem;
+    border-bottom: 2px solid var(--ink);
+    font-weight: 800;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8125rem;
+  }
+  .bar ul {
+    display: flex;
+    gap: clamp(1.25rem, 3vw, 2.75rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bar a {
+    text-decoration: none;
+    background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 100% / 0% 3px;
+    padding-bottom: 2px;
+    transition: background-size 0.4s var(--ease-out);
+  }
+  .bar a:hover {
+    background-size: 100% 3px;
+  }
+  .dateline {
+    margin: 0;
+  }
+
+  .masthead {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    z-index: 1;
+    margin: 0.06em 0 0;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    font-size: min(17.6vw, 28svh);
+    line-height: 0.8;
+    letter-spacing: -0.02em;
+    word-spacing: 0.16em;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .figure {
+    position: absolute;
+    z-index: 2;
+    bottom: 0;
+    left: 55%;
+    height: 90svh;
+    width: auto;
+    max-width: none;
+    translate: -50% 0;
+    animation: arrive 1.5s var(--ease-out) both;
+  }
+
+  .lines {
+    z-index: 4;
+    grid-row: 3;
+    align-self: start;
+    margin-top: clamp(0.8rem, 2.4svh, 2rem);
+  }
+  .lines ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.55rem, 1.6svh, 1.1rem);
+  }
+  .lines a {
+    display: block;
+    text-decoration: none;
+    font-size: clamp(0.875rem, 1vw, 0.9375rem);
+    line-height: 1.35;
+    font-weight: 500;
+    text-wrap: pretty;
+  }
+  .lines strong {
+    display: block;
+    width: fit-content;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    font-size: clamp(1.35rem, min(2.1vw, 3.6svh), 2rem);
+    line-height: 0.95;
+    margin-bottom: 0.2rem;
+    background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 88% / 0% 0.38em;
+    transition: background-size 0.5s var(--ease-out);
+  }
+  .lines a:hover strong,
+  .lines a:focus-visible strong {
+    background-size: 100% 0.38em;
+  }
+
+  .lines-left {
+    grid-column: 2 / span 3;
+  }
+  .lead {
+    margin: 0;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    font-size: clamp(2rem, min(3.9vw, 7svh), 3.9rem);
+    line-height: 0.86;
+  }
+  .deck {
+    margin: clamp(0.5rem, 1.4svh, 0.85rem) 0 clamp(0.8rem, 2.2svh, 1.4rem);
+    padding-bottom: clamp(0.8rem, 2.2svh, 1.4rem);
+    border-bottom: 2px solid var(--ink);
+    font-size: clamp(0.875rem, 1vw, 0.9375rem);
+    line-height: 1.4;
+    font-weight: 500;
+    max-width: 34ch;
+  }
+  .lead em {
+    font-style: normal;
+    background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 85% / 100% 0.3em;
+  }
+
+  .lines-right {
+    grid-column: 10 / span 4;
+    justify-self: end;
+    text-align: right;
+    margin-top: clamp(2.5rem, 9svh, 5.5rem);
+  }
+  .lines-right ul {
+    align-items: flex-end;
+  }
+  .lines-right a {
+    max-width: 22ch;
+  }
+  .lines-right strong {
+    margin-left: auto;
+    background-position: 100% 88%;
+  }
+
+  .seal {
+    position: absolute;
+    z-index: 3;
+    width: clamp(7rem, 10vw, 9.5rem);
+    left: 64%;
+    bottom: 18svh;
+    rotate: -12deg;
+    filter: drop-shadow(0 10px 18px oklch(0.25 0.01 75 / 0.35));
+  }
+
+  .foot {
+    grid-column: 2 / -1;
+    grid-row: 4;
+    z-index: 5;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.55rem 0.55rem 0.55rem 1.25rem;
+    background: var(--charcoal);
+    color: var(--bone);
+    text-decoration: none;
+    font-weight: 800;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.875rem;
+    box-shadow: 0 16px 30px -16px oklch(0.2 0.01 75 / 0.7);
+  }
+  .cta-arrow {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    aspect-ratio: 1;
+    background: var(--gold);
+    color: var(--charcoal);
+    transition: translate 0.4s var(--ease-out);
+  }
+  .cta:hover .cta-arrow {
+    translate: 0.25rem 0;
+  }
+  .index {
+    margin: 0 auto 0.3rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 17rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.7;
+    column-gap: 0.55rem;
+  }
+  .index span:not(.sr-only) + span::before {
+    content: '';
+    display: inline-block;
+    width: 0.32rem;
+    height: 0.32rem;
+    margin-right: 0.55rem;
+    vertical-align: 0.12em;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+  .code {
+    display: flex;
+    outline: 1.5px solid var(--ink);
+    outline-offset: -1.5px;
+  }
+
+  @keyframes arrive {
+    from {
+      opacity: 0;
+      translate: -47% 3%;
+    }
+  }
+  @keyframes arrive-flow {
+    from {
+      opacity: 0;
+      translate: 0 3%;
+    }
+  }
+
+  @media (max-width: 1360px), (max-height: 820px) {
+    .index {
+      display: none;
+    }
+  }
+
+  /* Short laptop screens: keep the exit on screen; the third left cover line yields first. */
+  @media (max-height: 780px) and (min-width: 861px) {
+    .lines-left li:nth-child(3) {
+      display: none;
+    }
+  }
+
+  /* 4: gold fails 3:1 on bone; charcoal carries focus here, the gold swipe stays the signature */
+  .cover :global(:focus-visible) {
+    outline-color: var(--charcoal);
+  }
+
+  @media (max-width: 860px) {
+    .cover {
+      grid-template-columns: 2.6rem minmax(0, 1fr);
+      grid-template-rows: none;
+    }
+    .spine {
+      width: 2.6rem;
+      font-size: 1.9rem;
+      justify-content: flex-start;
+    }
+    .dateline {
+      display: none;
+    }
+    .masthead {
+      grid-column: 2;
+      font-size: 31vw;
+      white-space: normal;
+      text-align: left;
+      line-height: 0.8;
+      margin-top: 0.12em;
+    }
+    .figure {
+      position: relative;
+      grid-column: 2;
+      grid-row: 3;
+      left: auto;
+      translate: none;
+      height: auto;
+      width: 100%;
+      max-width: none;
+      justify-self: stretch;
+      margin-top: -3.5rem;
+      border-bottom: 2px solid var(--ink);
+      animation: arrive-flow 1.5s var(--ease-out) both;
+    }
+    .lines-left,
+    .lines-right {
+      grid-column: 2;
+      text-align: left;
+      justify-self: stretch;
+    }
+    .lines-left {
+      grid-row: 4;
+      margin-top: 1.25rem;
+    }
+    .lines-right {
+      grid-row: 5;
+      margin-top: clamp(0.7rem, 1.8svh, 1.1rem);
+    }
+    .lines-right ul {
+      align-items: flex-start;
+    }
+    .lines-right strong {
+      margin-left: 0;
+      background-position: 0 88%;
+    }
+    .lead {
+      font-size: 12vw;
+    }
+    .seal {
+      left: auto;
+      right: var(--gutter);
+      bottom: auto;
+      top: 24rem;
+      width: 6.25rem;
+    }
+    .foot {
+      grid-column: 2;
+      grid-row: 6;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+  }
+</style>

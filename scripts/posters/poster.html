@@ -1,0 +1,299 @@
+<!doctype html>
+<!-- Poster art for the Work gallery, rendered at 1200x1800 by scripts/posters.mjs.
+     The project title is NOT painted here: the page sets it in HTML over the lower
+     third, so every motif keeps to the top ~58% and the bottom stays quiet ink. -->
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: 'Archivo Variable';
+    src: url('../../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2') format('woff2');
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+  }
+  @font-face {
+    font-family: 'Martian Mono Variable';
+    src: url('../../node_modules/@fontsource-variable/martian-mono/files/martian-mono-latin-wdth-normal.woff2') format('woff2');
+    font-weight: 100 800;
+    font-stretch: 75% 112.5%;
+  }
+  :root {
+    --ink: oklch(0.21 0.006 75);
+    --ink-2: oklch(0.26 0.008 75);
+    --ink-3: oklch(0.33 0.01 75);
+    --bone: oklch(0.95 0.014 85);
+    --bone-dim: oklch(0.78 0.016 85);
+    --gold: oklch(0.79 0.14 82);
+    --sans: 'Archivo Variable', sans-serif;
+    --mono: 'Martian Mono Variable', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 1800px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: var(--sans);
+    color: var(--bone);
+    background:
+      radial-gradient(90% 55% at 50% 28%, oklch(0.33 0.01 75), transparent 72%),
+      oklch(0.27 0.009 75);
+  }
+  /* Print grain, same recipe as the cover but screened for a dark stock. */
+  body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+    mix-blend-mode: screen;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .93 0 0 0 0 .88 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .poster { display: none; position: absolute; inset: 0; }
+  .poster.on { display: block; }
+
+  .billing {
+    position: absolute;
+    left: 90px;
+    right: 90px;
+    bottom: 64px;
+    padding-top: 22px;
+    border-top: 2px solid oklch(0.4 0.01 75);
+    display: flex;
+    justify-content: space-between;
+    font-size: 19px;
+    font-weight: 700;
+    font-stretch: 112%;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bone-dim);
+  }
+  .mono { font-family: var(--mono); font-stretch: 100%; letter-spacing: 0.02em; }
+  .stroke { color: transparent; -webkit-text-stroke: 2px var(--bone); }
+
+  /* --- Vault: the 4x4 keypad ---------------------------------------------- */
+  .keypad {
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    translate: -50% 0;
+    display: grid;
+    grid-template-columns: repeat(4, 170px);
+    gap: 26px;
+  }
+  .keypad span {
+    height: 170px;
+    display: grid;
+    place-items: center;
+    border: 3px solid var(--bone);
+    font-size: 84px;
+    font-weight: 900;
+    font-stretch: 62%;
+  }
+  .keypad span.dim { border-color: oklch(0.4 0.01 75); color: oklch(0.42 0.01 75); }
+  .keypad span.lit { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+  .pin {
+    position: absolute;
+    top: 980px;
+    left: 50%;
+    translate: -50% 0;
+    display: flex;
+    gap: 34px;
+  }
+  .pin i { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--bone); }
+  .pin i.f { background: var(--bone); }
+  .caption {
+    position: absolute;
+    top: 1050px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 20px;
+    color: var(--bone-dim);
+  }
+
+  /* --- AutoApplier: the pipeline, top to bottom --------------------------- */
+  .pipe {
+    position: absolute;
+    top: 120px;
+    left: 90px;
+    right: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pipe div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-size: 150px;
+    line-height: 0.92;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+  }
+  .pipe div small { font-size: 20px; color: var(--bone-dim); font-family: var(--mono); }
+  .pipe div.end span {
+    color: var(--bone);
+    -webkit-text-stroke: 0;
+    background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 86% / 100% 0.3em;
+  }
+
+  /* --- Waitlist: five texts, two seconds apart ---------------------------- */
+  .cron {
+    position: absolute;
+    top: 110px;
+    left: 90px;
+    font-size: 26px;
+    color: var(--bone-dim);
+  }
+  .cron b { color: var(--gold); font-weight: 500; }
+  .thread {
+    position: absolute;
+    top: 200px;
+    left: 90px;
+    right: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .bubble {
+    align-self: flex-start;
+    display: flex;
+    align-items: baseline;
+    gap: 28px;
+    padding: 26px 38px;
+    background: var(--bone);
+    color: var(--ink);
+    font-size: 78px;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .bubble small { font-family: var(--mono); font-size: 20px; font-weight: 500; color: var(--ink-3); text-transform: none; }
+  .bubble:nth-child(2) { margin-left: 70px; }
+  .bubble:nth-child(3) { margin-left: 140px; }
+  .bubble:nth-child(4) { margin-left: 210px; }
+  .bubble:nth-child(5) { margin-left: 280px; background: var(--gold); }
+
+  /* --- RLPredictor: the question and its thirteen features ---------------- */
+  .query {
+    position: absolute;
+    top: 120px;
+    left: 90px;
+    right: 90px;
+    font-size: 200px;
+    line-height: 0.84;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+  }
+  .query em { font-style: normal; color: var(--gold); }
+  .bars {
+    position: absolute;
+    top: 760px;
+    left: 90px;
+    right: 90px;
+    height: 230px;
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    border-bottom: 2px solid var(--bone);
+  }
+  .bars i { flex: 1; background: var(--bone); }
+  .bars i.g { background: var(--gold); }
+  .bars-label {
+    position: absolute;
+    top: 1010px;
+    left: 90px;
+    right: 90px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    color: var(--bone-dim);
+  }
+
+  /* --- Bell of the Ball: the live site as a print laid on the stock ------- */
+  .print {
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    width: 1000px;
+    translate: -50% 0;
+    rotate: -3deg;
+    background: var(--bone);
+    padding: 18px 18px 0;
+    box-shadow: 0 40px 70px -30px oklch(0.05 0 0 / 0.8);
+  }
+  .print .chrome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px 14px;
+    font-size: 18px;
+    color: var(--ink-3);
+  }
+  .print .chrome i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--ink-3); margin-right: 8px; }
+  .print img { display: block; width: 100%; }
+</style>
+</head>
+<body>
+  <section class="poster" id="vault">
+    <div class="keypad">
+      <span>1</span><span>2</span><span class="lit">3</span><span class="dim">A</span>
+      <span>4</span><span>5</span><span>6</span><span class="dim">B</span>
+      <span>7</span><span>8</span><span>9</span><span class="dim">C</span>
+      <span class="dim">*</span><span>0</span><span class="dim">#</span><span class="dim">D</span>
+    </div>
+    <div class="pin"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i></div>
+    <p class="caption mono">passphrase → argon2id → wrapping key → vault master key</p>
+    <div class="billing"><span>Python · FastAPI · PostgreSQL</span><span>Argon2id · Arduino Mega</span></div>
+  </section>
+
+  <section class="poster" id="autoapplier">
+    <div class="pipe">
+      <div class="stroke"><span>Job listing</span><small>01</small></div>
+      <div class="stroke"><span>Criteria gate</span><small>02</small></div>
+      <div class="stroke"><span>LLM engine</span><small>03</small></div>
+      <div class="stroke"><span>LaTeX → PDF</span><small>04</small></div>
+      <div class="end"><span>Human review</span><small>05</small></div>
+    </div>
+    <div class="billing"><span>Python · OpenAI · pdflatex</span><span>Docker · FastAPI</span></div>
+  </section>
+
+  <section class="poster" id="waitlist">
+    <p class="cron mono">cron <b>'47 * * * *'</b>  ·  PeopleSoft class search</p>
+    <div class="thread">
+      <p class="bubble">Seat open <small>:00</small></p>
+      <p class="bubble">Seat open <small>:02</small></p>
+      <p class="bubble">Seat open <small>:04</small></p>
+      <p class="bubble">Seat open <small>:06</small></p>
+      <p class="bubble">Seat open <small>:08</small></p>
+    </div>
+    <div class="billing"><span>Python · Playwright · BeautifulSoup4</span><span>GitHub Actions</span></div>
+  </section>
+
+  <section class="poster" id="rlpredictor">
+    <p class="query"><span class="stroke">Zen</span> o/u <em>2.5</em> demos <span class="stroke">in 3 games?</span></p>
+    <div class="bars">
+      <i style="height:62%"></i><i style="height:38%"></i><i style="height:81%"></i><i style="height:47%"></i>
+      <i style="height:70%"></i><i style="height:29%"></i><i class="g" style="height:96%"></i><i style="height:55%"></i>
+      <i style="height:42%"></i><i style="height:74%"></i><i style="height:33%"></i><i style="height:60%"></i><i style="height:51%"></i>
+    </div>
+    <p class="bars-label mono"><span>13 engineered features</span><span>→ MLP → P(over)</span></p>
+    <div class="billing"><span>Python · PyTorch · NLTK VADER</span><span>Ballchasing · Liquipedia</span></div>
+  </section>
+
+  <section class="poster" id="bellball">
+    <figure class="print">
+      <p class="chrome mono"><span><i></i><i></i><i></i></span><span>belloftheballreno.com</span></p>
+      <img src="botb-site.png" alt="" />
+    </figure>
+    <div class="billing"><span>Astro · TypeScript</span><span>GitHub Actions · Reno, NV</span></div>
+  </section>
+
+  <script>
+    const id = location.hash.slice(1) || 'vault';
+    document.getElementById(id)?.classList.add('on');
+  </script>
+</body>
+</html>

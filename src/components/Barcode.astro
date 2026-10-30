@@ -1,0 +1,58 @@
+---
+import { profile } from '../data/profile';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+// Deterministic bar widths from the handle, so the barcode is the same on every build.
+const bars: { x: number; w: number }[] = [];
+{
+  let x = 0;
+  const seed = [...profile.githubHandle].map((c) => c.charCodeAt(0));
+  for (let i = 0; i < 46; i++) {
+    const v = seed[i % seed.length] * (i + 3);
+    const w = (v % 3) + 1;
+    if (i % 2 === 0) bars.push({ x, w });
+    x += w + ((v >> 2) % 2) + 1;
+  }
+}
+const barWidth = bars.at(-1)!.x + bars.at(-1)!.w;
+---
+
+<a class:list={['barcode', className]} href={profile.github} aria-label={`GitHub: ${profile.githubHandle}`}>
+  <svg viewBox={`0 0 ${barWidth} 40`} preserveAspectRatio="none" aria-hidden="true">
+    {bars.map((b) => <rect x={b.x} y="0" width={b.w} height="40" />)}
+  </svg>
+  <span>github.com/{profile.githubHandle}</span>
+</a>
+
+<style>
+  .barcode {
+    --bc-paper: var(--bone);
+    --bc-ink: var(--charcoal);
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0.6rem 0.35rem;
+    background: var(--bc-paper);
+    color: var(--bc-ink);
+    text-decoration: none;
+    transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out);
+  }
+  svg {
+    width: 9.5rem;
+    height: 2.4rem;
+    fill: currentColor;
+  }
+  span {
+    font-family: var(--font-data);
+    font-size: 0.625rem;
+    letter-spacing: 0.02em;
+  }
+  .barcode:hover {
+    background: var(--bc-ink);
+    color: var(--bc-paper);
+  }
+</style>
