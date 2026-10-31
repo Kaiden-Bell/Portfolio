@@ -2,14 +2,14 @@
 import { profile } from '../data/profile';
 
 interface Props {
-  current: 'cover' | 'work';
+  current: 'cover' | 'work' | 'contact';
   lift?: boolean;
 }
 const { current, lift = false } = Astro.props;
 
 const links = [
   { id: 'work', label: 'Work', href: '/work' },
-  { id: 'contact', label: 'Contact', href: `mailto:${profile.email}` },
+  { id: 'contact', label: 'Contact', href: '/contact' },
   { id: 'github', label: 'GitHub', href: profile.github },
 ];
 ---
