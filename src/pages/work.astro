@@ -2,7 +2,8 @@
 import '@fontsource/dela-gothic-one/japanese-400.css';
 import Base from '../layouts/Base.astro';
 import Arrow from '../components/Arrow.astro';
-import { profile, nav } from '../data/profile';
+import SpineNav from '../components/SpineNav.astro';
+
 import { work } from '../data/work';
 
 // Flat stand-ins for the project imagery: one tone per frame, no pictures.
@@ -16,22 +17,7 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
 
 <Base title="Work · Kaiden Bell" theme="dark">
   <main class="work" id="work">
-    <p class="spine" lang="ja" aria-hidden="true">カイデン・ベル</p>
-
-    <header class="top">
-      <a class="id" href="/">
-        <span>{profile.name}</span>
-        <span>{profile.role}</span>
-      </a>
-      <nav aria-label="Primary">
-        <ul>
-          <li><a href="/">Cover</a></li>
-          {nav.map((item) => <li><a href={item.href} aria-current={item.href === '/work' ? 'page' : undefined}>{item.label}</a></li>)}
-        </ul>
-      </nav>
-    </header>
-
-    <p class="dateline">Autumn 2026<br />{profile.place}</p>
+    <SpineNav current="work" lift />
 
     <section class="reel" id="reel" style={`--n:${items.length}`} aria-label="Featured work">
       <h1 class="sr-only">Work</h1>
@@ -71,10 +57,6 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
       </div>
     </section>
 
-    <footer class="foot">
-      <a class="cta" href={`mailto:${profile.email}`}>Get in touch <span class="cta-arrow"><Arrow size={16} /></span></a>
-      <a class="plain" href={profile.github}>GitHub</a>
-    </footer>
 
     <dialog class="story" id="story" aria-labelledby="story-title">
       <div class="story-sheet">
@@ -194,7 +176,7 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
   // --- Story
   let opener = null;
   const hero = story.querySelector('[data-hero]');
-  const inert = (v) => mainEl.querySelectorAll('.top, .dateline, .reel, .foot').forEach((n) => (n.inert = v));
+  const inert = (v) => mainEl.querySelectorAll('.spine-nav, .reel').forEach((n) => (n.inert = v));
   const open = (i, from) => {
     const it = items[i];
     opener = from;
@@ -248,84 +230,8 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
     color: var(--bone);
     padding-left: var(--spine);
   }
-  .spine {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: var(--spine);
-    z-index: 40;
-    margin: 0;
-    padding-block: clamp(1rem, 3svh, 2rem);
-    display: flex;
-    justify-content: center;
-    background: var(--charcoal-2);
-    color: var(--gold);
-    writing-mode: vertical-rl;
-    font-family: var(--font-jp);
-    font-size: clamp(1.6rem, 3.2vw, 2.9rem);
-    letter-spacing: 0.08em;
-    line-height: 1;
-  }
 
-  /* Fixed furniture, as on the reference: name top left, nav top right, dateline bottom left. */
-  .top {
-    position: fixed;
-    top: clamp(1rem, 4svh, 2.5rem);
-    left: calc(var(--spine) + var(--edge));
-    right: var(--edge);
-    z-index: 30;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    pointer-events: none;
-    font-weight: 500;
-    font-size: 0.875rem;
-    line-height: 1.35;
-    mix-blend-mode: difference;
-    color: oklch(0.95 0.014 85);
-  }
-  .top > * {
-    pointer-events: auto;
-  }
-  .id {
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-  }
-  .id span:first-child {
-    font-weight: 800;
-  }
-  .top ul {
-    display: flex;
-    gap: 1.5rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .top a,
-  .plain {
-    text-decoration: none;
-    background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 100% / 0% 3px;
-    padding-bottom: 2px;
-    transition: background-size 0.4s var(--ease-out);
-  }
-  .top a:hover,
-  .top a[aria-current='page'],
-  .plain:hover {
-    background-size: 100% 3px;
-  }
-  .dateline {
-    position: fixed;
-    left: calc(var(--spine) + var(--edge));
-    bottom: clamp(1rem, 4svh, 2.5rem);
-    z-index: 30;
-    margin: 0;
-    font-weight: 500;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: var(--bone-dim);
-  }
+  /* Fixed furniture: the reel is the only thing on the page; navigation lives in the spine. */
 
   .reel {
     height: calc(var(--n) * 130svh);
@@ -411,7 +317,7 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
     font-weight: 900;
     font-stretch: 62%;
     text-transform: uppercase;
-    font-size: min(16vw, 28svh, calc(62vw / (var(--len) * 0.42)));
+    font-size: min(16vw, 28svh, calc(54vw / (var(--len) * 0.42)));
     line-height: 0.8;
     letter-spacing: -0.02em;
     word-spacing: 0.14em;
@@ -473,19 +379,6 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
     will-change: transform;
   }
 
-  .foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-right: var(--edge);
-    padding: clamp(1.5rem, 5svh, 3rem) 0;
-    border-top: 2px solid var(--bone);
-    font-weight: 800;
-    font-stretch: 112%;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.8125rem;
-  }
   .cta {
     display: inline-flex;
     align-items: center;
@@ -630,18 +523,12 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
   }
 
   @media (max-width: 860px) {
-    .top ul {
-      gap: 1rem;
-    }
-    .id span:last-child {
-      display: none;
-    }
     .frame {
       width: 84vw;
       height: 66svh;
     }
     .name {
-      font-size: min(22vw, calc(80vw / (var(--len) * 0.42)));
+      font-size: min(22vw, calc(70vw / (var(--len) * 0.42)));
     }
     .story-sheet {
       grid-template-columns: minmax(0, 1fr);

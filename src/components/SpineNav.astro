@@ -1,0 +1,157 @@
+---
+import { profile } from '../data/profile';
+
+interface Props {
+  current: 'cover' | 'work';
+  lift?: boolean;
+}
+const { current, lift = false } = Astro.props;
+
+const links = [
+  { id: 'work', label: 'Work', href: '/work' },
+  { id: 'contact', label: 'Contact', href: `mailto:${profile.email}` },
+  { id: 'github', label: 'GitHub', href: profile.github },
+];
+---
+
+<aside class:list={['spine-nav', lift && 'lift']} aria-label="Site">
+  <button class="tab" type="button" aria-expanded="false" aria-controls="spine-panel">
+    <span lang="ja">カイデン・ベル</span>
+    <span class="sr-only">Menu</span>
+  </button>
+  <div class="panel" id="spine-panel">
+    <a class="name" href="/">{profile.name}</a>
+    <nav aria-label="Primary">
+      <ul>
+        {links.map((l) => (
+          <li><a href={l.href} aria-current={l.id === current ? 'page' : undefined}>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <p class="place">{profile.place}</p>
+  </div>
+</aside>
+
+<script>
+  // Touch screens have no hover: the tab toggles the panel, and a tap elsewhere closes it.
+  const nav = document.querySelector('.spine-nav');
+  const tab = nav?.querySelector('.tab');
+  tab?.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    tab.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('pointerdown', (e) => {
+    if (nav && tab && !nav.contains(e.target) && nav.classList.contains('open')) {
+      nav.classList.remove('open');
+      tab.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<style>
+  .spine-nav {
+    --spine: clamp(2.5rem, 5vw, 4.5rem);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    width: var(--spine);
+    display: flex;
+    overflow: hidden;
+    background: var(--charcoal);
+    color: var(--gold);
+    transition: width 0.5s var(--ease-out);
+  }
+  .spine-nav.lift {
+    background: var(--charcoal-2);
+  }
+  .spine-nav:hover,
+  .spine-nav:focus-within,
+  .spine-nav.open {
+    width: calc(var(--spine) + 16rem);
+  }
+
+  .tab {
+    flex: none;
+    width: var(--spine);
+    height: 100%;
+    padding: clamp(1rem, 3svh, 2rem) 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .tab span:first-child {
+    writing-mode: vertical-rl;
+    font-family: var(--font-jp);
+    font-size: clamp(1.6rem, 3.2vw, 2.9rem);
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  .panel {
+    flex: none;
+    width: 16rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(1rem, 3svh, 2rem) var(--gutter) clamp(1rem, 3svh, 2rem) 1.25rem;
+    color: var(--bone);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.3s var(--ease-out),
+      visibility 0.3s;
+  }
+  .spine-nav:hover .panel,
+  .spine-nav:focus-within .panel,
+  .spine-nav.open .panel {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0.12s;
+  }
+
+  .name {
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    font-size: 2.25rem;
+    line-height: 0.85;
+    text-decoration: none;
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  nav a {
+    text-decoration: none;
+    font-weight: 800;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8125rem;
+    background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 100% / 0% 3px;
+    padding-bottom: 2px;
+    transition: background-size 0.4s var(--ease-out);
+  }
+  nav a:hover,
+  nav a[aria-current='page'] {
+    background-size: 100% 3px;
+  }
+  .place {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bone-dim);
+  }
+</style>
