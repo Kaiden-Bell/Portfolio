@@ -11,8 +11,9 @@ export const profile = {
   email: 'kaidenbell50@gmail.com',
 };
 
-// Every item must resolve. Add About back when that page exists.
+// Every item must resolve.
 export const nav = [
+  { label: 'About', href: '/#about' },
   { label: 'Work', href: '/work' },
   { label: 'Contact', href: '/contact' },
 ];

@@ -1,0 +1,158 @@
+---
+import { Image } from 'astro:assets';
+import chair from '../../assets/scenes/chair.webp';
+import { lens } from '../../data/about';
+
+// The camera pulls back first; the beats start once the whole frame is in view.
+const edges = [0.46, 0.64, 0.82];
+const slices = lens.beats.map((_, i) => ({ s: edges[i], e: i === edges.length - 1 ? 2 : edges[i + 1] }));
+---
+
+<section class="scene lens" id="lens" data-scene data-dark aria-label="Through my lens" style="--len:4.2">
+  <div class="scene-track">
+    <div class="scene-stage">
+      <div class="shot">
+        <Image
+          src={chair}
+          alt="Kaiden Bell in silhouette, leaning back in a chair with his head tipped up toward a glowing amber slab of light"
+          widths={[640, 960, 1254]}
+          sizes="(max-width: 860px) 150vw, 84vw"
+          loading="lazy"
+        />
+        <p class="slab" aria-hidden="true"><span>{lens.slab[0]}</span><span>{lens.slab[1]}</span></p>
+      </div>
+      <h2 class="sr-only">{lens.slab.join(' ')}</h2>
+
+      <ol class="beats">
+        {lens.beats.map((b, i) => (
+          <li class="beat" style={`--s:${slices[i].s};--e:${slices[i].e}`}>
+            <p class="scene-lead">{b.lead} <em>{b.mark}</em></p>
+            <p class="scene-body">{b.sub}</p>
+          </li>
+        ))}
+      </ol>
+
+      <div class="scene-bars"></div>
+      <p class="scene-cap"><span>{lens.caption}</span><span>3 / 3</span></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The slab of light in the photograph is a screen: the title is projected onto it, then the camera pulls back. */
+  .shot {
+    --S: min(84vw, 150svh);
+    /* 0 = tight on the slab, 1 = the whole frame. */
+    --t: clamp(0, calc((var(--p) - 0.06) * 2.6), 1);
+    container-type: inline-size;
+    position: absolute;
+    width: var(--S);
+    aspect-ratio: 1;
+    right: -4vw;
+    top: calc(50svh - var(--S) * 0.59);
+    transform-origin: 44.5% 42.6%;
+    scale: calc(1.55 - var(--t) * 0.55);
+    translate: calc((1 - var(--t)) * -5vw) calc((1 - var(--t)) * 24svh);
+    will-change: scale, translate;
+  }
+  .shot :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    /* Feather the edges into the page so the photograph never shows as a box. */
+    mask-image:
+      linear-gradient(to right, transparent, #000 10%, #000 90%, transparent),
+      linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+    mask-composite: intersect;
+  }
+  /* The slab spans x 18.7%..84.0%, y 35.2%..50.0% of the photograph, but his head covers it from x 68%:
+     the title lives in the clear part, x 18.7%..68.2%. */
+  .slab {
+    position: absolute;
+    left: 18.7%;
+    top: 35.2%;
+    width: 49.5%;
+    height: 14.8%;
+    margin: 0;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    font-size: 4.5cqi;
+    line-height: 0.86;
+    letter-spacing: -0.01em;
+    color: oklch(0.2 0.03 60);
+    white-space: nowrap;
+  }
+
+  .beats {
+    position: absolute;
+    z-index: 5;
+    inset: 0;
+    margin: 0;
+    padding: calc(var(--bar) + 2svh) var(--gutter) calc(var(--bar) + 2svh) calc(var(--spine) + var(--col-gap));
+    list-style: none;
+    display: grid;
+  }
+  .beats li {
+    grid-area: 1 / 1;
+    align-self: center;
+    width: min(100%, clamp(15rem, 28vw, 24rem));
+  }
+  .beats .scene-lead {
+    font-size: clamp(2rem, min(3.9vw, 7svh), 3.9rem);
+  }
+  .beats .scene-body {
+    margin-top: clamp(0.6rem, 1.6svh, 1rem);
+    padding-top: clamp(0.6rem, 1.6svh, 1rem);
+    border-top: 2px solid var(--bone);
+  }
+
+  @media (max-width: 860px) {
+    .shot {
+      --S: 150vw;
+      right: auto;
+      left: calc(50% + 1.3rem);
+      translate: -50% calc((1 - var(--t)) * 35svh);
+      top: calc(var(--bar) + 8svh - var(--S) * 0.33);
+      scale: calc(1.4 - var(--t) * 0.4);
+    }
+    .beats {
+      padding-left: calc(2.6rem + 0.75rem);
+    }
+    .beats li {
+      align-self: end;
+      width: 100%;
+    }
+    .beats .scene-lead {
+      font-size: 11vw;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shot {
+      scale: 1;
+      translate: 0 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) and (max-width: 860px) {
+    .shot {
+      translate: -50% 0;
+    }
+  }
+  @media (scripting: none) {
+    .shot {
+      --t: 1;
+    }
+    .beats {
+      position: relative;
+      inset: auto;
+    }
+    .beats li {
+      grid-area: auto;
+    }
+  }
+</style>

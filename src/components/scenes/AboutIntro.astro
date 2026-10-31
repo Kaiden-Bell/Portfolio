@@ -1,0 +1,166 @@
+---
+import { Image } from 'astro:assets';
+import back from '../../assets/scenes/facing-away.webp';
+import front from '../../assets/portraits/front.webp';
+import { intro } from '../../data/about';
+
+// The beats start once he has turned round: the first at 0.44 of the scene, the last holds to the end.
+const edges = [0.44, 0.65, 0.85];
+const slices = intro.beats.map((_, i) => ({ s: edges[i], e: i === edges.length - 1 ? 2 : edges[i + 1] }));
+---
+
+<section class="scene intro" id="about" data-scene data-dark aria-label="Introduction" style="--len:4.8">
+  <div class="scene-track">
+    <div class="scene-stage">
+      <div class="shot">
+        <Image
+          class="back"
+          src={back}
+          alt="Kaiden Bell from behind, facing a disc of amber light"
+          widths={[640, 960, 1254]}
+          sizes="(max-width: 860px) 170vw, 130svh"
+          loading="lazy"
+        />
+        <Image
+          class="front"
+          src={front}
+          alt="Kaiden Bell in a black sweatshirt and clear glasses, looking up and to the left, in front of the same disc of amber light"
+          widths={[640, 960, 1120]}
+          sizes="(max-width: 860px) 150vw, 110svh"
+          loading="lazy"
+        />
+      </div>
+
+      <ol class="beats">
+        {intro.beats.map((b, i) => (
+          <li class="beat" style={`--s:${slices[i].s};--e:${slices[i].e}`}>
+            <p class="scene-lead">{b.lead} <em>{b.mark}</em></p>
+            <p class="scene-body">{b.sub}</p>
+          </li>
+        ))}
+      </ol>
+
+      <div class="scene-bars"></div>
+      <p class="scene-cap"><span>{intro.caption}</span><span>1 / 3</span></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* One photograph, two takes: he faces the light, then turns round. The takes share the disc, so it stays put. */
+  .shot {
+    --S: min(130svh, 170vw);
+    /* Light comes up first, then the turn. */
+    --b: clamp(0, calc(var(--p) * 8), 1);
+    --t: clamp(0, calc((var(--p) - 0.2) * 5), 1);
+    position: absolute;
+    top: -8svh;
+    left: calc(50% + var(--spine) / 2);
+    width: var(--S);
+    aspect-ratio: 1;
+    translate: -50% 0;
+    transform-origin: 49% 38%;
+    /* A slow push-in across the whole scene. */
+    scale: calc(1 + var(--p) * 0.12);
+    will-change: scale;
+  }
+  /* Fades the frame up from the projection black, so the photograph's edges never show against the page. */
+  .shot::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: var(--screen);
+    opacity: calc(1 - var(--b));
+  }
+  .shot :global(img) {
+    position: absolute;
+    display: block;
+    max-width: none;
+    /* Feather the edges into the page so no photograph ever shows as a box. */
+    mask-image:
+      linear-gradient(to right, transparent, #000 14%, #000 86%, transparent),
+      linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+    mask-composite: intersect;
+  }
+  .shot :global(.back) {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: calc(1 - var(--t));
+  }
+  /* Sized and placed so its disc lands exactly on the disc in the first take. */
+  .shot :global(.front) {
+    width: 84.2%;
+    height: auto;
+    left: 7.4%;
+    top: -0.7%;
+    opacity: var(--t);
+  }
+
+  .beats {
+    position: absolute;
+    z-index: 5;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--bar) + clamp(1rem, 4svh, 2.5rem));
+    margin: 0;
+    padding: 0 var(--gutter) 0 0;
+    list-style: none;
+    display: grid;
+  }
+  .beats li {
+    grid-area: 1 / 1;
+    align-self: end;
+    display: grid;
+    grid-template-columns: var(--spine) repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    align-items: end;
+  }
+  .beats .scene-lead {
+    grid-column: 2 / span 8;
+    font-size: clamp(2.6rem, min(7.4vw, 14svh), 7.5rem);
+  }
+  .beats .scene-body {
+    grid-column: 10 / -1;
+    padding-bottom: 0.35rem;
+  }
+
+  @media (max-width: 860px) {
+    .shot {
+      top: calc(var(--bar) + 1svh);
+    }
+    .beats {
+      bottom: calc(var(--bar) + 2svh);
+    }
+    .beats li {
+      grid-template-columns: 2.6rem minmax(0, 1fr);
+      row-gap: 0.9rem;
+    }
+    .beats .scene-lead {
+      grid-column: 2;
+      font-size: 15vw;
+    }
+    .beats .scene-body {
+      grid-column: 2;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shot {
+      scale: 1;
+    }
+  }
+  @media (scripting: none) {
+    .shot {
+      --b: 1;
+      --t: 1;
+    }
+    .beats {
+      position: relative;
+      bottom: auto;
+    }
+    .beats li {
+      grid-area: auto;
+    }
+  }
+</style>

@@ -1,0 +1,196 @@
+---
+import Arrow from '../Arrow.astro';
+import Barcode from '../Barcode.astro';
+import { finale } from '../../data/about';
+import { profile } from '../../data/profile';
+---
+
+<section class="finale scene-grain" id="finale" aria-labelledby="finale-title">
+  <h2 class="scene-lead title" id="finale-title">{finale.lead.text} <em>{finale.lead.mark}</em></h2>
+
+  <ul class="reach">
+    <li>
+      <a href={`mailto:${profile.email}`}>
+        <strong>Email</strong>
+        <span class="addr">{profile.email}</span>
+      </a>
+    </li>
+    <li>
+      <a href={profile.github} rel="noopener">
+        <strong>GitHub</strong>
+        <span class="data">github.com/{profile.githubHandle}</span>
+      </a>
+    </li>
+    <li>
+      <a href="/contact">
+        <strong>Contact</strong>
+        <span>All the ways to reach me</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="foot">
+    <a class="cta" href={finale.cta.href}>
+      {finale.cta.label}
+      <span class="cta-arrow"><Arrow size={16} /></span>
+    </a>
+    <Barcode />
+  </div>
+</section>
+
+<style>
+  .finale {
+    --ink: var(--charcoal);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 100svh;
+    background:
+      radial-gradient(80% 70% at 55% 55%, oklch(0.97 0.01 85), transparent 75%),
+      var(--bone);
+    color: var(--ink);
+    display: grid;
+    grid-template-columns: var(--spine) repeat(12, minmax(0, 1fr));
+    grid-template-rows: 1fr auto auto;
+    column-gap: var(--col-gap);
+    padding: clamp(2rem, 8svh, 5rem) var(--gutter) clamp(0.9rem, 2.4svh, 1.6rem) 0;
+  }
+  /* Gold fails 3:1 on bone; charcoal carries focus here, the gold swipe stays the signature. */
+  .finale :global(:focus-visible) {
+    outline-color: var(--charcoal);
+  }
+
+  .title {
+    grid-column: 2 / -1;
+    grid-row: 1;
+    align-self: center;
+    z-index: 1;
+    font-size: min(17.6vw, 28svh);
+    line-height: 0.8;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  /* At this size the line box is far taller than the letters, so the highlighter sits higher than on the lead lines. */
+  .title em {
+    background-size: 100% 0.17em;
+    background-position: 0 72%;
+  }
+
+  .reach {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    z-index: 2;
+    margin: clamp(1.5rem, 5svh, 3rem) 0 0;
+    padding: clamp(0.8rem, 2svh, 1.2rem) 0 0;
+    list-style: none;
+    border-top: 2px solid var(--ink);
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--col-gap);
+  }
+  .reach a {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-decoration: none;
+    font-size: clamp(0.875rem, 1vw, 0.9375rem);
+    line-height: 1.35;
+    font-weight: 500;
+  }
+  .reach strong {
+    display: block;
+    width: fit-content;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    font-size: clamp(1.35rem, min(2.1vw, 3.6svh), 2rem);
+    line-height: 0.95;
+    margin-bottom: 0.2rem;
+    background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 88% / 0% 0.38em;
+    transition: background-size 0.5s var(--ease-out);
+  }
+  .reach a:hover strong,
+  .reach a:focus-visible strong {
+    background-size: 100% 0.38em;
+  }
+  .addr {
+    overflow-wrap: anywhere;
+  }
+  .data {
+    font-family: var(--font-data);
+    font-size: 0.75rem;
+    letter-spacing: 0.01em;
+    overflow-wrap: anywhere;
+  }
+
+  .foot {
+    grid-column: 2 / -1;
+    grid-row: 3;
+    z-index: 5;
+    margin-top: clamp(1.5rem, 5svh, 3rem);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.55rem 0.55rem 0.55rem 1.25rem;
+    background: var(--charcoal);
+    color: var(--bone);
+    text-decoration: none;
+    font-weight: 800;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.875rem;
+    box-shadow: 0 16px 30px -16px oklch(0.2 0.01 75 / 0.7);
+  }
+  .cta-arrow {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    aspect-ratio: 1;
+    background: var(--gold);
+    color: var(--charcoal);
+    transition: translate 0.4s var(--ease-out);
+  }
+  .cta:hover .cta-arrow {
+    translate: 0.25rem 0;
+  }
+  .foot :global(.barcode) {
+    --bc-paper: transparent;
+    outline: 1.5px solid var(--charcoal);
+    outline-offset: -1.5px;
+  }
+  .foot :global(.barcode:hover) {
+    --bc-paper: var(--bone);
+  }
+
+  @media (max-width: 860px) {
+    .finale {
+      grid-template-columns: 2.6rem minmax(0, 1fr);
+      grid-template-rows: none;
+      padding-top: 3rem;
+    }
+    .title,
+    .reach,
+    .foot {
+      grid-column: 2;
+      grid-row: auto;
+    }
+    .title {
+      font-size: 21vw;
+    }
+    .reach {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 1.25rem;
+    }
+    .foot {
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+  }
+</style>

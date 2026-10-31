@@ -1,0 +1,302 @@
+---
+import Arrow from '../Arrow.astro';
+import { craft } from '../../data/about';
+
+// Panels pan sideways as the scene scrolls: the opener, one per project, then the toolkit.
+const projects = craft.projects;
+const total = projects.length + 2;
+---
+
+<section
+  class="scene craft"
+  id="craft"
+  data-scene
+  data-light
+  data-panels={total}
+  aria-label="Work and toolkit"
+  style={`--len:${total + 0.6}`}
+>
+  <div class="scene-track">
+    <div class="scene-stage scene-grain">
+      <div class="view">
+        <div class="strip">
+          <article class="panel open" style="--i:0">
+            <p class="scene-lead lead">{craft.lead.text} <em>{craft.lead.mark}</em></p>
+            <p class="scene-body deck">{craft.deck}</p>
+          </article>
+
+          {projects.map((p, i) => (
+            <article class="panel proj" style={`--i:${i + 1};--len:${p.name.length}`}>
+              <p class="count"><span>{String(i + 1).padStart(2, '0')}</span> / {String(projects.length).padStart(2, '0')}</p>
+              <h2 class="name">{p.name}</h2>
+              <div class="meta">
+                <p class="cat">{p.category}<span aria-hidden="true"> · </span>{p.year}</p>
+                <p class="scene-body line">{p.line}</p>
+                <p class="tags"><span class="sr-only">Stack: </span>{p.stack.map((s) => <span>{s}</span>)}</p>
+                <a class="go" href={p.href} rel="noopener">
+                  View it
+                  <span class="chip"><Arrow size={16} /></span>
+                </a>
+              </div>
+            </article>
+          ))}
+
+          <article class="panel kit" style={`--i:${projects.length + 1}`}>
+            <p class="scene-lead lead">{craft.toolkit.lead.text} <em>{craft.toolkit.lead.mark}</em></p>
+            <div class="lists">
+              <section aria-labelledby="kit-eng">
+                <h2 id="kit-eng">Engineering</h2>
+                <ul>{craft.toolkit.engineering.map((s) => <li>{s}</li>)}</ul>
+              </section>
+              <section aria-labelledby="kit-des">
+                <h2 id="kit-des">Design</h2>
+                <ul>{craft.toolkit.design.map((s) => <li>{s}</li>)}</ul>
+              </section>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="scene-bars"></div>
+      <p class="scene-cap"><span>{craft.caption}</span><span>2 / 3</span></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .craft {
+    /* Gold fails 3:1 on bone; charcoal carries focus here, the gold swipe stays the signature. */
+    --ink: var(--charcoal);
+  }
+  .craft :global(:focus-visible) {
+    outline-color: var(--charcoal);
+  }
+  .scene-stage {
+    background:
+      radial-gradient(80% 70% at 55% 45%, oklch(0.97 0.01 85), transparent 75%),
+      var(--bone);
+  }
+
+  .view {
+    position: absolute;
+    inset: 0 0 0 var(--spine);
+    container-type: inline-size;
+    overflow: hidden;
+  }
+  .strip {
+    display: flex;
+    height: 100%;
+    /* --x is the panel index, paced so each panel dwells at rest and travels between. */
+    translate: calc(var(--x) * -100cqw) 0;
+    will-change: translate;
+  }
+  .panel {
+    flex: 0 0 100cqw;
+    container-type: inline-size;
+    /* The name drifts against the pan; each panel keeps its own drift to itself. */
+    overflow: clip;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: calc(var(--bar) + 4svh) var(--gutter) calc(var(--bar) + 3svh) var(--col-gap);
+  }
+
+  .lead {
+    font-size: clamp(2.6rem, min(11vw, 21svh), 11rem);
+    max-width: 14ch;
+  }
+  .deck {
+    margin-top: clamp(1rem, 3svh, 2rem);
+    padding-top: clamp(0.8rem, 2svh, 1.2rem);
+    border-top: 2px solid var(--charcoal);
+    max-width: 38ch;
+    font-size: clamp(0.9375rem, 1.25vw, 1.125rem);
+  }
+
+  /* Project panel: the name is the poster; it drifts a little against the pan so the strip has depth. */
+  .count {
+    position: absolute;
+    top: calc(var(--bar) + 2.5svh);
+    right: var(--gutter);
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bone-dim);
+  }
+  .count span {
+    font-weight: 900;
+    font-stretch: 62%;
+    font-size: 2.4rem;
+    line-height: 1;
+    letter-spacing: 0;
+    color: var(--charcoal);
+    vertical-align: -0.12em;
+  }
+  .name {
+    margin: 0;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    line-height: 0.8;
+    letter-spacing: -0.015em;
+    white-space: nowrap;
+    font-size: min(26cqi, calc(190cqi / var(--len)), 40svh);
+    translate: calc((var(--x) - var(--i)) * 16cqi) 0;
+  }
+  .meta :global(.scene-body) {
+    font-size: clamp(0.9375rem, 1.3vw, 1.2rem);
+  }
+  .meta {
+    margin-top: clamp(1.25rem, 4svh, 2.5rem);
+    padding-top: clamp(0.8rem, 2svh, 1.2rem);
+    border-top: 2px solid var(--charcoal);
+    display: grid;
+    grid-template-columns: minmax(0, 12rem) minmax(0, 34ch) minmax(0, 1fr) auto;
+    column-gap: var(--col-gap);
+    align-items: start;
+  }
+  .cat {
+    margin: 0;
+    font-weight: 800;
+    font-stretch: 112%;
+    font-size: clamp(0.8125rem, 1vw, 0.9375rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+  .tags {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.55rem;
+    align-content: start;
+    font-size: clamp(0.6875rem, 0.85vw, 0.8125rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.7;
+  }
+  .tags span:not(.sr-only) + span::before {
+    content: '';
+    display: inline-block;
+    width: 0.32rem;
+    height: 0.32rem;
+    margin-right: 0.55rem;
+    vertical-align: 0.12em;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+  .go {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.4rem 0.4rem 0.4rem 1rem;
+    background: var(--charcoal);
+    color: var(--bone);
+    text-decoration: none;
+    font-weight: 800;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.8125rem;
+    box-shadow: 0 16px 30px -16px oklch(0.2 0.01 75 / 0.7);
+  }
+  .chip {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    aspect-ratio: 1;
+    background: var(--gold);
+    color: var(--charcoal);
+    transition: translate 0.4s var(--ease-out);
+  }
+  .go:hover .chip {
+    translate: 0.2rem 0;
+  }
+
+  /* Toolkit panel */
+  .kit .lead {
+    max-width: none;
+  }
+  .lists {
+    margin-top: clamp(1.25rem, 4svh, 2.5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    column-gap: var(--col-gap);
+    padding-top: clamp(0.8rem, 2svh, 1.2rem);
+    border-top: 2px solid var(--charcoal);
+  }
+  .lists h2 {
+    margin: 0 0 0.5rem;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    font-size: clamp(1.35rem, min(2.1vw, 3.6svh), 2rem);
+    line-height: 0.95;
+  }
+  .lists ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 1.1rem;
+    font-size: clamp(0.875rem, 1.1vw, 1rem);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .lists section:last-child ul {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  @media (max-width: 860px) {
+    .view {
+      inset: 0 0 0 2.6rem;
+    }
+    .panel {
+      padding-top: calc(var(--bar) + 8svh);
+    }
+    .lead {
+      font-size: 17vw;
+      max-width: none;
+    }
+    .name {
+      font-size: min(26cqi, calc(190cqi / var(--len)));
+    }
+    .meta {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 0.7rem;
+    }
+    .go {
+      justify-self: start;
+      margin-top: 0.4rem;
+    }
+    .lists {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 1.25rem;
+    }
+    .count {
+      top: calc(var(--bar) + 1.5svh);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .name {
+      translate: none;
+    }
+  }
+  @media (scripting: none) {
+    .strip {
+      translate: none;
+      flex-direction: column;
+    }
+    .panel {
+      flex-basis: auto;
+      min-height: 100svh;
+    }
+  }
+</style>

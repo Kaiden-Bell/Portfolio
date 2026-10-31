@@ -1,0 +1,140 @@
+/*
+  The cover's trailer: pinned scenes on a tall track. Scroll sets --p (0..1) on each .scene, and --x (a paced
+  panel index) on scenes that pan. Everything else in the scenes is a function of those numbers.
+*/
+
+:root {
+  /* Projection black: the edge colour of the portraits, a touch under Graphite Ink, so photographs melt into the page. */
+  --screen: oklch(0.155 0.008 70);
+  --bar: clamp(1.75rem, 5.5svh, 3.25rem);
+  --spine: clamp(2.5rem, 5vw, 4.5rem);
+  --col-gap: clamp(0.75rem, 1.6vw, 1.75rem);
+}
+
+.scene {
+  --p: 0;
+  --x: 0;
+  position: relative;
+  background: var(--screen);
+  color: var(--bone);
+}
+.scene[data-light] {
+  background: var(--bone);
+  color: var(--charcoal);
+  --bars: var(--charcoal);
+}
+.scene-track {
+  height: calc(var(--len, 4) * 100svh);
+}
+.scene-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* The frame: letterbox bars and a caption set into the bottom one. */
+.scene-bars {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+.scene-bars::before,
+.scene-bars::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--bar);
+  background: var(--bars, var(--screen));
+}
+.scene-bars::before {
+  top: 0;
+}
+.scene-bars::after {
+  bottom: 0;
+}
+.scene-cap {
+  position: absolute;
+  z-index: 31;
+  left: calc(var(--spine) + var(--col-gap));
+  right: var(--gutter);
+  bottom: 0;
+  height: var(--bar);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+}
+.scene[data-light] .scene-cap {
+  color: var(--bone-dim);
+}
+
+/* Cover type, reused: condensed, heavy, uppercase, with the gold highlighter under the closing phrase. */
+.scene-lead {
+  margin: 0;
+  font-weight: 900;
+  font-stretch: 62%;
+  text-transform: uppercase;
+  line-height: 0.86;
+  text-wrap: balance;
+}
+.scene-lead em {
+  font-style: normal;
+  background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 85% / 100% 0.3em;
+}
+.scene-body {
+  margin: 0;
+  font-size: clamp(0.875rem, 1vw, 0.9375rem);
+  line-height: 1.4;
+  font-weight: 500;
+  max-width: 34ch;
+  text-wrap: pretty;
+}
+
+/* A beat is a line of type that owns a slice [--s, --e] of the scene's progress and crossfades with its neighbours. */
+.beat {
+  --o: clamp(0, min(calc((var(--p) - var(--s)) * 25), calc((var(--e) - var(--p)) * 25)), 1);
+  opacity: var(--o);
+  translate: 0 calc((1 - var(--o)) * 1.5rem);
+}
+
+/* Printed stock grain, as on the cover. */
+.scene-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .18 0 0 0 0 .15 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beat {
+    translate: none;
+  }
+}
+
+/* Without script nothing sets --p: show every beat and let the scenes scroll as plain pages. */
+@media (scripting: none) {
+  .scene-track {
+    height: auto;
+  }
+  .scene-stage {
+    position: relative;
+    height: auto;
+    min-height: 100svh;
+  }
+  .beat {
+    --o: 1;
+  }
+}

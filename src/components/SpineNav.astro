@@ -8,6 +8,7 @@ interface Props {
 const { current, lift = false } = Astro.props;
 
 const links = [
+  { id: 'about', label: 'About', href: '/#about' },
   { id: 'work', label: 'Work', href: '/work' },
   { id: 'contact', label: 'Contact', href: '/contact' },
   { id: 'github', label: 'GitHub', href: profile.github },
@@ -61,7 +62,9 @@ const links = [
     overflow: hidden;
     background: var(--charcoal);
     color: var(--gold);
-    transition: width 0.5s var(--ease-out);
+    transition:
+      width 0.5s var(--ease-out),
+      background 0.4s var(--ease-out);
   }
   .spine-nav.lift {
     background: var(--charcoal-2);

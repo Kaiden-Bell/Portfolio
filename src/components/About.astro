@@ -1,0 +1,56 @@
+---
+import '../styles/scenes.css';
+import AboutIntro from './scenes/AboutIntro.astro';
+import AboutCraft from './scenes/AboutCraft.astro';
+import AboutLens from './scenes/AboutLens.astro';
+import Finale from './scenes/Finale.astro';
+---
+
+<AboutIntro />
+<AboutCraft />
+<AboutLens />
+<Finale />
+
+<script>
+  // Scroll sets numbers, not styles: --p (0 at the top of a scene's pinned stage, 1 at the bottom) on every scene,
+  // and --x (the panel index, paced so each panel dwells at rest) on scenes that pan. The stylesheets do the rest.
+  const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+  const smoother = (f: number) => f * f * f * (f * (f * 6 - 15) + 10);
+  const paced = (t: number, n: number) => {
+    const k = Math.min(Math.floor(t), n - 1);
+    return k + smoother(clamp(t - k, 0, 1));
+  };
+
+  const scenes = [...document.querySelectorAll<HTMLElement>('[data-scene]')].map((el) => ({
+    el,
+    track: el.querySelector<HTMLElement>('.scene-track')!,
+    panels: Number(el.dataset.panels ?? 0),
+    dark: el.hasAttribute('data-dark'),
+  }));
+  const spine = document.querySelector('.spine-nav');
+  let queued = false;
+
+  const update = () => {
+    queued = false;
+    let overDark = false;
+    for (const s of scenes) {
+      const r = s.track.getBoundingClientRect();
+      const p = clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1);
+      s.el.style.setProperty('--p', p.toFixed(4));
+      if (s.panels > 1) s.el.style.setProperty('--x', paced(p * (s.panels - 1), s.panels).toFixed(4));
+      if (s.dark && r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.5) overDark = true;
+    }
+    // The spine is Graphite Ink on the bone stock; over the dark scenes it steps up a half tone, as on the Work page.
+    spine?.classList.toggle('lift', overDark);
+  };
+  const queue = () => {
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(update);
+    }
+  };
+
+  addEventListener('scroll', queue, { passive: true });
+  addEventListener('resize', queue);
+  update();
+</script>

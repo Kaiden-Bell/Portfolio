@@ -5,6 +5,7 @@ import Base from '../layouts/Base.astro';
 import Arrow from '../components/Arrow.astro';
 import SpineNav from '../components/SpineNav.astro';
 import Roundel from '../components/Roundel.astro';
+import About from '../components/About.astro';
 import portrait from '../assets/portraits/three-quarter.webp';
 import { profile, stack } from '../data/profile';
 import { work } from '../data/work';
@@ -53,8 +54,13 @@ import { work } from '../data/work';
         <span class="cta-arrow"><Arrow size={16} /></span>
       </a>
       <p class="index"><span class="sr-only">Stack: </span>{stack.slice(0, 8).map((s) => <span>{s}</span>)}</p>
+      <a class="scroll" href="#about">
+        Scroll
+        <Arrow class="scroll-arrow" size={16} />
+      </a>
     </footer>
   </main>
+  <About />
 </Base>
 
 <style>
@@ -62,6 +68,10 @@ import { work } from '../data/work';
     --ink: var(--charcoal);
     --paper: var(--bone);
     position: relative;
+    /* Above the scenes below it: the fixed spine lives in this stacking context. */
+    z-index: 2;
+    /* The opening: letterbox bars part on the page behind. No fill-forwards: a lingering clip-path would clip the fixed spine. */
+    animation: open 1.8s var(--ease-out) backwards;
     min-height: 100svh;
     overflow: hidden;
     isolation: isolate;
@@ -102,6 +112,7 @@ import { work } from '../data/work';
     word-spacing: 0.16em;
     white-space: nowrap;
     text-align: center;
+    animation: title 2.6s 0.1s var(--ease-out) backwards;
   }
 
   .figure {
@@ -255,6 +266,28 @@ import { work } from '../data/work';
     line-height: 1.7;
     column-gap: 0.55rem;
   }
+  .scroll {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.45rem;
+    text-decoration: none;
+    font-weight: 800;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8125rem;
+    padding-bottom: 2px;
+    background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 100% / 0% 3px;
+    transition: background-size 0.4s var(--ease-out);
+  }
+  .scroll:hover,
+  .scroll:focus-visible {
+    background-size: 100% 3px;
+  }
+  .foot :global(.scroll-arrow) {
+    rotate: 90deg;
+  }
   .index span:not(.sr-only) + span::before {
     content: '';
     display: inline-block;
@@ -266,6 +299,17 @@ import { work } from '../data/work';
     border-radius: 50%;
   }
 
+  @keyframes open {
+    from {
+      clip-path: inset(22% 0 22% 0);
+    }
+  }
+  @keyframes title {
+    from {
+      opacity: 0;
+      scale: 1.07;
+    }
+  }
   @keyframes arrive {
     from {
       opacity: 0;
