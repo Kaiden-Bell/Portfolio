@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "review:browser": "node scripts/browser-review.mjs",
     "matte": "node scripts/matte.mjs",
     "scenes": "node scripts/scenes.mjs"
   },
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "playwright": "^1.64.1",
     "sharp": "0.35.5"
   }
 }
