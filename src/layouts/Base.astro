@@ -2,18 +2,30 @@
 import '@fontsource-variable/archivo/wdth.css';
 import '@fontsource-variable/martian-mono/wdth.css';
 import '../styles/global.css';
+import { profile } from '../data/profile';
 
 interface Props {
   title: string;
   description?: string;
   theme?: 'dark' | 'light';
+  /** Social preview image, relative to the site root. */
+  image?: string;
+  /** Keep a page out of search results (the 404). */
+  noindex?: boolean;
 }
 
 const {
   title,
   description = 'Kaiden Bell: full-stack and hardware systems engineer in Sparks, Nevada.',
   theme = 'dark',
+  image = '/og.png',
+  noindex = false,
 } = Astro.props;
+
+const site = Astro.site ?? Astro.url;
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
+const goatcounter = import.meta.env.PROD && profile.goatcounter;
 ---
 
 <!doctype html>
@@ -23,8 +35,34 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content={theme} />
     <meta name="theme-color" content={theme === 'dark' ? '#1d1c1a' : '#f3eee3'} />
-    <meta name="description" content={description} />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${profile.name}, ${profile.role.toLowerCase()}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {goatcounter && (
+      <script
+        is:inline
+        data-goatcounter={`https://${goatcounter}.goatcounter.com/count`}
+        async
+        src="https://gc.zgo.at/count.js"
+      ></script>
+    )}
     <slot name="head" />
   </head>
   <body>

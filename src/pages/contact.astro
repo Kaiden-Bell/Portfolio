@@ -9,7 +9,7 @@ import { profile } from '../data/profile';
 
 <Base
   title="Contact · Kaiden Bell"
-  description="Get in touch with Kaiden Bell: email, GitHub, and where to find them in Sparks, Nevada."
+  description="Get in touch with Kaiden Bell: email, GitHub, LinkedIn, résumé, and where to find them in Sparks, Nevada."
   theme="light"
 >
   <main class="contact">
@@ -39,6 +39,18 @@ import { profile } from '../data/profile';
           <a href={profile.github} rel="noopener">
             <strong>GitHub</strong>
             <span class="data">github.com/{profile.githubHandle}</span>
+          </a>
+        </li>
+        <li>
+          <a href={profile.linkedin} rel="noopener">
+            <strong>LinkedIn</strong>
+            <span class="data">linkedin.com/in/{profile.linkedinHandle}</span>
+          </a>
+        </li>
+        <li>
+          <a href={profile.resume} type="application/pdf">
+            <strong>Résumé</strong>
+            <span class="data">PDF</span>
           </a>
         </li>
         <li>
@@ -235,7 +247,7 @@ import { profile } from '../data/profile';
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     column-gap: clamp(0.75rem, 1.6vw, 1.75rem);
   }
   .lines li {

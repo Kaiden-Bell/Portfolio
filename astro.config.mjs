@@ -1,7 +1,8 @@
 import { defineConfig } from 'astro/config';
-import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
+  site: 'https://kaidenbell.me',
   devToolbar: { enabled: false },
-  integrations: [react()],
+  integrations: [sitemap({ filter: (page) => !page.includes('/404') })],
 });

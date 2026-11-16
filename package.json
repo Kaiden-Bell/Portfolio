@@ -9,20 +9,17 @@
     "preview": "astro preview",
     "review:browser": "node scripts/browser-review.mjs",
     "matte": "node scripts/matte.mjs",
-    "scenes": "node scripts/scenes.mjs"
+    "scenes": "node scripts/scenes.mjs",
+    "brand": "node scripts/brand.mjs"
   },
   "dependencies": {
-    "@astrojs/react": "7.1.1",
+    "@astrojs/sitemap": "3.7.5",
     "@fontsource-variable/archivo": "5.3.0",
     "@fontsource-variable/martian-mono": "5.3.0",
     "@fontsource/dela-gothic-one": "5.3.0",
-    "astro": "7.3.8",
-    "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "astro": "7.3.8"
   },
   "devDependencies": {
-    "@types/react": "19.3.0",
-    "@types/react-dom": "19.3.0",
     "playwright": "^1.64.1",
     "sharp": "0.35.5"
   }

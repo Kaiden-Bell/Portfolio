@@ -10,7 +10,8 @@ import portrait from '../assets/portraits/three-quarter.webp';
 import { profile, stack } from '../data/profile';
 import { work } from '../data/work';
 
-// The cover's featured projects are the same ones the reel shows, so each line opens its frame.
+// The cover's featured projects are the first three the reel shows, so each line opens its frame.
+const featured = work.slice(0, 3);
 ---
 
 <Base title="Kaiden Bell" theme="light">
@@ -33,7 +34,7 @@ import { work } from '../data/work';
       <p class="lead">From the register to the <em>REST API.</em></p>
       <p class="deck">{profile.role}, studying Computer Science &amp; Engineering at the University of Nevada, Reno. Builds web software, embedded systems and the tools around them.</p>
       <ul>
-        {work.map((p) => (
+        {featured.map((p) => (
           <li><a href={`/work#${p.id}`}><strong>{p.name}</strong> {p.line}</a></li>
         ))}
       </ul>
@@ -43,6 +44,7 @@ import { work } from '../data/work';
       <ul>
         <li><a href={`mailto:${profile.email}`}><strong>Email</strong> {profile.email}</a></li>
         <li><a href={profile.github}><strong>GitHub</strong> github.com/{profile.githubHandle}</a></li>
+        <li><a href={profile.linkedin}><strong>LinkedIn</strong> in/{profile.linkedinHandle}</a></li>
       </ul>
     </section>
 

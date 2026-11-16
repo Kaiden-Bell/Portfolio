@@ -1,6 +1,7 @@
-// Featured work for the /work reel. Copy marked generic is a stand-in until Kaiden supplies the real facts.
+// Featured work for the /work reel, the cover list and the About craft panels.
+// Categories and years are drafts: Kaiden to confirm before launch.
 export type Work = {
-  id: 'rootmap' | 'bellball' | 'randomevents';
+  id: string;
   name: string;
   category: string;
   year: string;
@@ -11,30 +12,48 @@ export type Work = {
 
 export const work: Work[] = [
   {
-    id: 'rootmap',
-    name: 'RootMap',
-    category: 'Project category',
+    id: 'vault',
+    name: 'The Vault',
+    category: 'Hardware security',
     year: '2026',
-    line: 'One sentence about the project.',
-    stack: ['Stack'],
-    href: 'https://github.com/Kaiden-Bell',
+    line: 'A password manager that will not open without a hardware keypad.',
+    stack: ['Python', 'Embedded C', 'UART', 'FastAPI', 'PostgreSQL', 'Argon2id'],
+    href: 'https://github.com/Kaiden-Bell/Password-Manager',
+  },
+  {
+    id: 'rlpredictor',
+    name: 'RLPredictor',
+    category: 'Machine learning',
+    year: '2026',
+    line: 'Thirteen features, one neural net, and a lot of Rocket League replays.',
+    stack: ['Python', 'PyTorch', 'SQL'],
+    href: 'https://github.com/Kaiden-Bell/RLPredictor',
   },
   {
     id: 'bellball',
     name: 'Bell of the Ball',
-    category: 'Project category',
+    category: 'Client web',
     year: '2026',
     line: 'An event-services site built in Astro for a real client.',
-    stack: ['Astro', 'TypeScript'],
+    stack: ['TypeScript', 'Astro'],
     href: 'https://belloftheballreno.com',
   },
   {
-    id: 'randomevents',
-    name: 'RandomEvents',
-    category: 'Project category',
+    id: 'autoapplier',
+    name: 'AutoApplier',
+    category: 'LLM tooling',
     year: '2026',
-    line: 'One sentence about the project.',
-    stack: ['Stack'],
-    href: 'https://github.com/Kaiden-Bell',
+    line: 'An LLM tailors the résumé. A human still hits send.',
+    stack: ['Python', 'Docker', 'FastAPI'],
+    href: 'https://github.com/Kaiden-Bell/AutoApplier',
+  },
+  {
+    id: 'waitlist',
+    name: 'TMCC Waitlist',
+    category: 'Automation',
+    year: '2026',
+    line: 'Watches a full class and texts you the moment a seat opens.',
+    stack: ['Python', 'Docker'],
+    href: 'https://github.com/Kaiden-Bell/TMCC-Waitlist',
   },
 ];

@@ -2,7 +2,7 @@
 import { profile } from '../data/profile';
 
 interface Props {
-  current: 'cover' | 'work' | 'contact';
+  current?: 'cover' | 'work' | 'contact';
   lift?: boolean;
 }
 const { current, lift = false } = Astro.props;

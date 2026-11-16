@@ -1,0 +1,189 @@
+---
+import '@fontsource/dela-gothic-one/japanese-400.css';
+import Base from '../layouts/Base.astro';
+import Arrow from '../components/Arrow.astro';
+import Barcode from '../components/Barcode.astro';
+import SpineNav from '../components/SpineNav.astro';
+---
+
+<Base
+  title="Page not found · Kaiden Bell"
+  description="This page is not in the issue. Head back to the cover, the work, or the contact page."
+  theme="light"
+  noindex
+>
+  <main class="lost">
+    <SpineNav />
+
+    <h1 class="masthead">404</h1>
+
+    <section class="body" aria-label="Page not found">
+      <p class="lead">This page didn't make <em>the issue.</em></p>
+      <p class="deck">The link may be old, or the address mistyped. Everything that did make it is one click away.</p>
+    </section>
+
+    <footer class="foot">
+      <div class="ctas">
+        <a class="cta" href="/">
+          Back to the cover
+          <span class="cta-arrow"><Arrow size={16} /></span>
+        </a>
+        <a class="link" href="/work">The work</a>
+        <a class="link" href="/contact">Contact</a>
+      </div>
+      <Barcode />
+    </footer>
+  </main>
+</Base>
+
+<style>
+  .lost {
+    --ink: var(--charcoal);
+    --paper: var(--bone);
+    position: relative;
+    min-height: 100svh;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      radial-gradient(80% 70% at 55% 45%, oklch(0.97 0.01 85), transparent 75%),
+      var(--paper);
+    color: var(--ink);
+    display: grid;
+    grid-template-columns: clamp(2.5rem, 5vw, 4.5rem) repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto 1fr auto;
+    column-gap: clamp(0.75rem, 1.6vw, 1.75rem);
+    padding: clamp(1.2rem, 4svh, 2.5rem) var(--gutter) clamp(0.9rem, 2.4svh, 1.6rem) 0;
+  }
+  .lost::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    opacity: 0.3;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .18 0 0 0 0 .15 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .lost :global(:focus-visible) {
+    outline-color: var(--charcoal);
+  }
+
+  .masthead {
+    grid-column: 2 / -1;
+    margin: 0.06em 0 0;
+    font-weight: 900;
+    font-stretch: 62%;
+    font-size: min(40vw, 52svh);
+    line-height: 0.8;
+    letter-spacing: -0.02em;
+  }
+
+  .body {
+    grid-column: 2 / span 7;
+    align-self: start;
+    margin-top: clamp(1rem, 4svh, 2.5rem);
+    padding-top: clamp(0.7rem, 2svh, 1.2rem);
+    border-top: 2px solid var(--ink);
+  }
+  .lead {
+    margin: 0;
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    font-size: clamp(2rem, min(3.9vw, 7svh), 3.9rem);
+    line-height: 0.86;
+  }
+  .lead em {
+    font-style: normal;
+    background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 85% / 100% 0.3em;
+  }
+  .deck {
+    margin: clamp(0.6rem, 1.6svh, 1rem) 0 0;
+    max-width: 40ch;
+    font-size: clamp(0.875rem, 1vw, 0.9375rem);
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .foot {
+    grid-column: 2 / -1;
+    z-index: 5;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.55rem 0.55rem 0.55rem 1.25rem;
+    background: var(--charcoal);
+    color: var(--bone);
+    text-decoration: none;
+    font-weight: 800;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.875rem;
+    box-shadow: 0 16px 30px -16px oklch(0.2 0.01 75 / 0.7);
+  }
+  .cta-arrow {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    aspect-ratio: 1;
+    background: var(--gold);
+    color: var(--charcoal);
+    transition: translate 0.4s var(--ease-out);
+  }
+  .cta:hover .cta-arrow {
+    translate: 0.25rem 0;
+  }
+  .link {
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    line-height: 1;
+    text-decoration: none;
+    background: linear-gradient(var(--gold), var(--gold)) no-repeat 0 88% / 0% 0.38em;
+    transition: background-size 0.5s var(--ease-out);
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-size: 100% 0.38em;
+  }
+  .foot :global(.barcode) {
+    --bc-paper: transparent;
+    outline: 1.5px solid var(--charcoal);
+    outline-offset: -1.5px;
+  }
+
+  @media (max-width: 860px) {
+    .lost {
+      grid-template-columns: 2.6rem minmax(0, 1fr);
+    }
+    .masthead,
+    .body,
+    .foot {
+      grid-column: 2;
+    }
+    .masthead {
+      font-size: 52vw;
+    }
+    .lead {
+      font-size: 12vw;
+    }
+    .foot {
+      flex-wrap: wrap;
+    }
+  }
+</style>

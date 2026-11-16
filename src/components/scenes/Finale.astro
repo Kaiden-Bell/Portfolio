@@ -22,6 +22,12 @@ import { profile } from '../../data/profile';
       </a>
     </li>
     <li>
+      <a href={profile.linkedin} rel="noopener">
+        <strong>LinkedIn</strong>
+        <span class="data">in/{profile.linkedinHandle}</span>
+      </a>
+    </li>
+    <li>
       <a href="/contact">
         <strong>Contact</strong>
         <span>All the ways to reach me</span>
@@ -85,7 +91,7 @@ import { profile } from '../../data/profile';
     list-style: none;
     border-top: 2px solid var(--ink);
     display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
     column-gap: var(--col-gap);
   }
   .reach a {

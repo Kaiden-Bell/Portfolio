@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Astro (user's choice). Deploy target: undecided.
+Astro (user's choice). Deployed to GitHub Pages (repo `Kaiden-Bell/Portfolio`, `.github/workflows/deploy.yml`) at https://kaidenbell.me.
 
 ## Users
 
@@ -32,7 +32,7 @@ What only this site can offer is Kaiden: their face, name, and actual work, both
 - Sections at launch: Work, About, Contact.
 - Journal is **dropped for now**. Add it back only once real writing exists, and never fill it with placeholder posts.
 - Work covers two kinds of evidence: code repositories (link to GitHub) and design case studies.
-- Undecided: deploy target, contact method (form vs. email vs. social links), and the specific projects and case studies to feature.
+- Contact is email plus GitHub, LinkedIn and a résumé PDF. Featured work lives in `src/data/work.ts`.
 
 ## Brand Commitments
 
