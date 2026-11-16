@@ -9,7 +9,7 @@ import { profile } from '../data/profile';
 
 <Base
   title="Contact · Kaiden Bell"
-  description="Get in touch with Kaiden Bell: email, GitHub, LinkedIn, résumé, and where to find them in Sparks, Nevada."
+  description="Get in touch with Kaiden Bell: email, GitHub, LinkedIn, and where to find them in Sparks, Nevada."
   theme="light"
 >
   <main class="contact">
@@ -33,7 +33,7 @@ import { profile } from '../data/profile';
       <p class="sr-only" role="status" data-copy-status></p>
     </section>
 
-    <section class="lines" aria-label="Elsewhere">
+    <section class="lines" aria-label="Elsewhere" style={`--cols:${profile.resume ? 5 : 4}`}>
       <ul>
         <li>
           <a href={profile.github} rel="noopener">
@@ -47,12 +47,14 @@ import { profile } from '../data/profile';
             <span class="data">linkedin.com/in/{profile.linkedinHandle}</span>
           </a>
         </li>
-        <li>
-          <a href={profile.resume} type="application/pdf">
-            <strong>Résumé</strong>
-            <span class="data">PDF</span>
-          </a>
-        </li>
+        {profile.resume && (
+          <li>
+            <a href={profile.resume} type="application/pdf">
+              <strong>Résumé</strong>
+              <span class="data">PDF</span>
+            </a>
+          </li>
+        )}
         <li>
           <strong>Based in</strong>
           <span>{profile.place}</span>
@@ -247,7 +249,7 @@ import { profile } from '../data/profile';
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
     column-gap: clamp(0.75rem, 1.6vw, 1.75rem);
   }
   .lines li {

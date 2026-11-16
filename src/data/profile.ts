@@ -11,7 +11,8 @@ export const profile = {
   email: 'kaidenbell50@gmail.com',
   linkedin: 'https://www.linkedin.com/in/kaiden-bell/',
   linkedinHandle: 'kaiden-bell',
-  resume: '/cv.pdf',
+  // Path to a public résumé PDF in public/ (e.g. '/cv.pdf'). Empty hides the Résumé link.
+  resume: '',
   // GoatCounter site code (the <code> in <code>.goatcounter.com). Empty means no analytics script.
   goatcounter: '',
 };
