@@ -41,11 +41,16 @@ const links = [
     const open = nav.classList.toggle('open');
     tab.setAttribute('aria-expanded', String(open));
   });
+  const close = () => {
+    if (!nav || !tab || !nav.classList.contains('open')) return;
+    nav.classList.remove('open');
+    tab.setAttribute('aria-expanded', 'false');
+  };
   document.addEventListener('pointerdown', (e) => {
-    if (nav && tab && !nav.contains(e.target) && nav.classList.contains('open')) {
-      nav.classList.remove('open');
-      tab.setAttribute('aria-expanded', 'false');
-    }
+    if (nav && !nav.contains(e.target as Node)) close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
   });
 </script>
 
@@ -69,10 +74,20 @@ const links = [
   .spine-nav.lift {
     background: var(--charcoal-2);
   }
-  .spine-nav:hover,
-  .spine-nav:focus-within,
+  /* Hover opens it only where hover is real; on touch, a tap's sticky hover and focus would hold it open. */
+  .spine-nav:has(:focus-visible),
   .spine-nav.open {
     width: calc(var(--spine) + 16rem);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .spine-nav:hover {
+      width: calc(var(--spine) + 16rem);
+    }
+    .spine-nav:hover .panel {
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0.12s;
+    }
   }
 
   .tab {
@@ -110,8 +125,7 @@ const links = [
       opacity 0.3s var(--ease-out),
       visibility 0.3s;
   }
-  .spine-nav:hover .panel,
-  .spine-nav:focus-within .panel,
+  .spine-nav:has(:focus-visible) .panel,
   .spine-nav.open .panel {
     opacity: 1;
     visibility: visible;

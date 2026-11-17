@@ -4,15 +4,39 @@ import Base from '../layouts/Base.astro';
 import Arrow from '../components/Arrow.astro';
 import SpineNav from '../components/SpineNav.astro';
 
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { work } from '../data/work';
 
-// Flat stand-ins for the project imagery: one tone per frame, no pictures.
+// Flat tones: the frame's ground, and its whole look when a project has no photo yet.
 const tones = [
   { bg: 'oklch(0.33 0.01 75)', fg: 'oklch(0.95 0.014 85)' },
   { bg: 'oklch(0.95 0.014 85)', fg: 'oklch(0.21 0.006 75)' },
   { bg: 'oklch(0.41 0.011 75)', fg: 'oklch(0.95 0.014 85)' },
 ];
-const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
+
+// Project photos live at src/assets/work/<id>.<ext>, matched to work.ts by id.
+const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/work/*.{png,jpg,jpeg,webp,avif}', { eager: true });
+const photoFor = (id: string) =>
+  Object.entries(photos).find(([path]) => path.split('/').pop()!.replace(/\.[^.]+$/, '') === id)?.[1].default;
+
+const items = await Promise.all(
+  work.map(async (p, i) => {
+    const tone = tones[i % tones.length];
+    const src = photoFor(p.id);
+    if (!src) return { ...p, ...tone, shot: null };
+    // The frame is at most 1120px wide, so 2240px covers it at 2x.
+    const cap = Math.min(src.width, 2240);
+    const widths = [...new Set([720, 1120, 1680].filter((w) => w < cap).concat(cap))];
+    const img = await getImage({ src, widths, format: 'webp', quality: 82 });
+    return {
+      ...p,
+      bg: tone.bg,
+      fg: 'oklch(0.95 0.014 85)', // titles sit on a darkened photo, so always Bone
+      shot: { src: img.src, srcset: img.srcSet.attribute, alt: p.photoAlt ?? '', pos: p.photoFocus ?? '50% 0%' },
+    };
+  }),
+);
 ---
 
 <Base title="Work · Kaiden Bell" theme="dark">
@@ -31,7 +55,21 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
               aria-label={`Open ${p.name}`}
               style={`--bg:${p.bg}`}
             >
-              <span class="fill"></span>
+              {p.shot ? (
+                <span class="shot">
+                  <img
+                    src={p.shot.src}
+                    srcset={p.shot.srcset}
+                    sizes="(max-width: 860px) 84vw, min(76vw, 1120px)"
+                    alt=""
+                    decoding="async"
+                    fetchpriority={i === 0 ? 'high' : 'auto'}
+                    style={`object-position:${p.shot.pos}`}
+                  />
+                </span>
+              ) : (
+                <span class="fill"></span>
+              )}
               <span class="shade"></span>
             </button>
           ))}
@@ -181,6 +219,18 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
     const it = items[i];
     opener = from;
     hero.style.setProperty('--bg', it.bg);
+    hero.replaceChildren();
+    if (it.shot) {
+      const img = new Image();
+      img.className = 'story-shot';
+      img.decoding = 'async';
+      img.sizes = '(max-width: 860px) 92vw, 55vw';
+      img.srcset = it.shot.srcset;
+      img.src = it.shot.src;
+      img.alt = it.shot.alt;
+      img.style.objectPosition = it.shot.pos;
+      hero.append(img);
+    }
     story.querySelector('[data-s-meta]').textContent = `${it.category} · ${it.year}`;
     story.querySelector('[data-s-title]').textContent = it.name;
     story.querySelector('[data-s-line]').textContent = it.line;
@@ -276,6 +326,24 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
     inset: -30% 0;
     translate: 0 var(--par);
     background: radial-gradient(60% 40% at 50% 50%, oklch(1 0 0 / 0.1), transparent 70%);
+  }
+  /* A project photo: it drifts a little less than the light does, and a centred scrim keeps the title readable. */
+  .shot {
+    position: absolute;
+    inset: -6% 0;
+    translate: 0 calc(var(--par) * 0.35);
+  }
+  .shot img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .shot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(70% 60% at 50% 50%, oklch(0.14 0.006 75 / 0.62), oklch(0.14 0.006 75 / 0.32));
   }
   .shade {
     position: absolute;
@@ -452,6 +520,13 @@ const items = work.map((p, i) => ({ ...p, ...tones[i % tones.length] }));
     background: var(--bg);
     box-shadow: 0 30px 60px -30px oklch(0.2 0.01 75 / 0.7);
     rotate: -2deg;
+    overflow: hidden;
+  }
+  .story-hero :global(.story-shot) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .story-copy > * {
     opacity: 0;
