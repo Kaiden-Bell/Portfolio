@@ -204,6 +204,22 @@ const items = await Promise.all(
   };
   thumbs.forEach((t, i) => t.addEventListener('click', () => goTo(i)));
 
+  // When scrolling stops between two frames, settle on the nearest one.
+  let touching = false, idle = 0;
+  const snap = () => {
+    if (touching || story.open) return;
+    const r = reel.getBoundingClientRect();
+    const t = clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1) * (N - 1);
+    const near = Math.round(t);
+    if (Math.abs(t - near) > 0.01) goTo(near);
+  };
+  addEventListener('touchstart', () => { touching = true; clearTimeout(idle); }, { passive: true });
+  const release = () => { touching = false; if (!('onscrollend' in window)) idle = setTimeout(snap, 150); };
+  addEventListener('touchend', release, { passive: true });
+  addEventListener('touchcancel', release, { passive: true });
+  if ('onscrollend' in window) addEventListener('scrollend', snap);
+  else addEventListener('scroll', () => { clearTimeout(idle); idle = setTimeout(snap, 150); }, { passive: true });
+
   // Hovering the front frame wakes its arrow.
   stage.addEventListener('pointermove', (e) => {
     const f = e.target.closest?.('.frame');
@@ -253,7 +269,7 @@ const items = await Promise.all(
   };
   story.querySelector('[data-close]').addEventListener('click', close);
   story.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
-  frames.forEach((el, i) => el.addEventListener('click', () => (i === active ? open(i, el) : goTo(i))));
+  frames.forEach((el, i) => el.addEventListener('click', () => (i === Math.round(target) ? open(i, el) : goTo(i))));
 
   addEventListener('keydown', (e) => {
     if (story.open) return;
@@ -598,6 +614,10 @@ const items = await Promise.all(
   }
 
   @media (max-width: 860px) {
+    /* About 80svh of scroll per frame, so one swipe moves roughly one project. */
+    .reel {
+      height: calc(var(--n) * 85svh);
+    }
     .frame {
       width: 84vw;
       height: 66svh;
