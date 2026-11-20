@@ -26,6 +26,7 @@ export const work: Work[] = [
     line: 'A password manager that will not open without a hardware keypad.',
     stack: ['Python', 'Embedded C', 'UART', 'FastAPI', 'PostgreSQL', 'Argon2id'],
     href: 'https://github.com/Kaiden-Bell/Password-Manager',
+    photoAlt: "A 4×4 keypad wired to an Elegoo board and breadboard LEDs, next to The Vault's unlock screen reading 'PIN accepted'.",
   },
   {
     id: 'rlpredictor',
