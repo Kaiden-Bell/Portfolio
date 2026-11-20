@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
+import AxeBuilder from '@axe-core/playwright';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = `${root}artifacts/browser-review`;
@@ -34,6 +35,7 @@ for (const stream of [server.stdout, server.stderr]) {
 let browser;
 const results = [];
 const errors = [];
+const accessibility = [];
 const shutdown = () => server.kill('SIGTERM');
 process.once('SIGINT', shutdown);
 process.once('SIGTERM', shutdown);
@@ -68,6 +70,22 @@ try {
     const capture = async (name) => {
       await page.screenshot({ path: `${output}/${device.name}-${name}.png` });
     };
+    // Accessibility: record every violation, fail the run on serious or critical ones.
+    const audit = async (label, include) => {
+      let builder = new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']);
+      if (include) builder = builder.include(include);
+      const { violations, incomplete } = await builder.analyze();
+      const found = violations.map((v) => ({
+        id: v.id, impact: v.impact, help: v.help, nodes: v.nodes.length,
+        targets: v.nodes.slice(0, 5).map((n) => n.target.join(' ')),
+      }));
+      accessibility.push({ device: device.name, label, violations: found, incomplete: incomplete.length });
+      for (const v of found) {
+        if (v.impact === 'serious' || v.impact === 'critical') {
+          errors.push(`${device.name} ${label}: axe ${v.impact} ${v.id} (${v.nodes}) ${v.targets.join(', ')}`);
+        }
+      }
+    };
     const visit = async (route) => {
       const response = await page.goto(`${base}${route}`);
       assert.equal(response.status(), 200, `${route} must load`);
@@ -78,10 +96,12 @@ try {
     };
     await visit('/');
     await capture('home');
+    await audit('home');
     await page.locator('.spine-nav .tab').click();
     assert.equal(await page.locator('.spine-nav .tab').getAttribute('aria-expanded'), 'true');
     await page.waitForTimeout(500);
     await capture('menu');
+    await audit('menu', '.spine-nav');
     await page.locator('.spine-nav .tab').click();
     const scenes = await page.locator('[data-scene]').count();
     for (let i = 0; i < scenes; i++) {
@@ -93,6 +113,7 @@ try {
     }
     await visit('/work');
     await capture('work');
+    await audit('work');
     const thumbs = page.locator('[data-thumb]');
     const projects = await thumbs.count();
     for (let i = 0; i < projects; i++) {
@@ -103,11 +124,13 @@ try {
       await page.locator('dialog[open]').waitFor();
       await page.waitForTimeout(500);
       await capture(`project-${i + 1}`);
+      if (i === 0) await audit('story', 'dialog[open]');
       await page.locator('[data-close]').click();
       await page.locator('dialog[open]').waitFor({ state: 'hidden' });
     }
     await visit('/contact');
     await capture('contact');
+    await audit('contact');
     assert.match(await page.locator('a.addr').getAttribute('href'), /^mailto:/);
     results.push({ viewport: device, pages: ['/', '/work', '/contact'], menu: 'passed', projectDialogs: projects, screenshots: 'captured' });
     await context.close();
@@ -123,5 +146,5 @@ try {
   shutdown();
   await serverDone;
   await writeFile(`${output}/server.log`, serverLog);
-  await writeFile(`${output}/results.json`, JSON.stringify({ capturedAt: new Date().toISOString(), results, errors }, null, 2));
+  await writeFile(`${output}/results.json`, JSON.stringify({ capturedAt: new Date().toISOString(), results, accessibility, errors }, null, 2));
 }

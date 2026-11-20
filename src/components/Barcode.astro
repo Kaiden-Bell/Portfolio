@@ -21,7 +21,7 @@ const bars: { x: number; w: number }[] = [];
 const barWidth = bars.at(-1)!.x + bars.at(-1)!.w;
 ---
 
-<a class:list={['barcode', className]} href={profile.github} aria-label={`GitHub: ${profile.githubHandle}`}>
+<a class:list={['barcode', className]} href={profile.github}>
   <svg viewBox={`0 0 ${barWidth} 40`} preserveAspectRatio="none" aria-hidden="true">
     {bars.map((b) => <rect x={b.x} y="0" width={b.w} height="40" />)}
   </svg>
